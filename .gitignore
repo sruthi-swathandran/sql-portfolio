@@ -1,0 +1,39 @@
+# ---- Data files -------------------------------------------------------------
+# Raw datasets are large and publicly available. Never commit them.
+# Each project README documents where to download its source data.
+data/
+*.csv
+*.tsv
+*.zip
+*.gz
+*.parquet
+
+# Exception: keep small reference/lookup tables that the analysis depends on
+!**/reference/*.csv
+!**/*_data_dictionary.csv
+
+# ---- Credentials ------------------------------------------------------------
+# Never commit connection strings, passwords, or .env files.
+.env
+.env.*
+*.cnf
+my.cnf
+credentials.*
+config.local.*
+connection.json
+
+# ---- MySQL dumps ------------------------------------------------------------
+*.sql.gz
+*_dump.sql
+*_backup.sql
+
+# ---- Editors & OS -----------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- MySQL Workbench --------------------------------------------------------
+*.mwb.bak
