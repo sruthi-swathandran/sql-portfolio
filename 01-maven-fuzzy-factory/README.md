@@ -7,7 +7,7 @@ The business questions here are the ones an e-commerce analyst is actually asked
 where is traffic coming from, how much of it converts, which channels are worth
 the spend, and did the new product launches work.
 
----
+--------------------------------------------------------------------------------------------------------------------------------------
 
 ## Business questions
 
@@ -17,15 +17,19 @@ the spend, and did the new product launches work.
 4. How have revenue per order and revenue per session evolved?
 5. Where do users drop out of the conversion funnel?
 6. What was the measurable impact of each new product launch?
+7. Do mobile and desktop visitors convert differently, and has the gap changed over time?
+8. Is the brand campaign worth the spend, compared with nonbrand?
+9. Do returning visitors convert better than first-time visitors, and what share of revenue do they drive?
+10. Which product has the highest refund rate, and does any product show a quality problem in a specific period?
 
----
+---------------------------------------------------------------------------------------------------------------------
 
 ## Data
 
 **Source:** [Maven Analytics Data Playground](https://mavenanalytics.io/data-playground)
 — "Toy Store E-Commerce Database"
 **Licence:** free for educational and portfolio use
-**Period:** March 2012 – April 2015
+**Period:** 19 March 2012 – 19 March 2015 (final month partial)
 
 Download the archive and place the six CSVs in `data/`. They are not committed
 to this repository.
@@ -59,9 +63,18 @@ to this repository.
 
 ## Findings
 
-<!-- Fill in as you go. Lead with the answer, then show the query that produced it.
-     A reader should be able to skim this section and understand the business
-     story without opening a single .sql file. -->
+### 1. How have website sessions trended over time?
+
+**Traffic grew continuously across the full period, with a strong Q4 seasonal peak.**
+
+Sessions roughly doubled year-over-year in every month — January went from
+6,401 (2013) to 14,825 (2014) to 25,337 (2015).
+
+A month-on-month view appears to show decline after December 2014, but this is
+a seasonal peak followed by a partial final month: the data ends 19 March 2015.
+
+*Query: [`analysis/01_traffic_trends.sql`](./analysis/01_traffic_trends.sql) ·
+Results: [`results/01_monthly_traffic.csv`](./results/01_monthly_traffic.csv)*
 
 ---
 
