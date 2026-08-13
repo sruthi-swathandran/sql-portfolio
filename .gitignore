@@ -11,6 +11,8 @@ data/
 # Exception: keep small reference/lookup tables that the analysis depends on
 !**/reference/*.csv
 !**/*_data_dictionary.csv
+# Exception: analysis output is small and is the evidence behind each finding
+!**/results/*.csv
 
 # ---- Credentials ------------------------------------------------------------
 # Never commit connection strings, passwords, or .env files.
