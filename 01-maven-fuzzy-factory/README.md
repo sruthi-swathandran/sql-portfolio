@@ -129,6 +129,8 @@ profitability.
 *Query: [`analysis/03_channel_performance.sql`](./analysis/03_channel_performance.sql) ·
 Results: [`results/03_channel_performance.csv`](./results/03_channel_performance.csv)*
 
+---
+
 ## Files
 
 | File | Purpose |
