@@ -130,6 +130,52 @@ profitability.
 Results: [`results/03_channel_performance.csv`](./results/03_channel_performance.csv)*
 
 ---
+### 4. How have revenue per order and revenue per session evolved?
+
+**Revenue per session grew 2.56×, from $2.07 to $5.30. Most of that came from
+better conversion, not bigger baskets.**
+
+| Year | Sessions | Orders | Revenue/order | Revenue/session |
+|---|---:|---:|---:|---:|
+| 2012 | 62,470 | 2,586 | $49.99 | $2.07 |
+| 2013 | 112,781 | 7,447 | $52.81 | $3.49 |
+| 2014 | 233,422 | 16,860 | $63.80 | $4.61 |
+| 2015 | 64,198 | 5,420 | $62.80 | $5.30 |
+
+Revenue per session is the product of conversion rate and average order value.
+Splitting the 2.56× growth: conversion contributed 2.04×, order value 1.26×.
+Persuading more visitors to buy mattered roughly twice as much as persuading
+buyers to spend more — and conversion gains are free, where order value gains
+usually require new products or pricing changes.
+
+2012's average order value of exactly **$49.99** is a useful sanity check: that is
+the price of The Original Mr. Fuzzy, the only product on sale that year. Every
+2012 order was a single bear. Order value only starts rising after the second
+product launches in January 2013, which points at cross-selling rather than
+pricing.
+
+**Neither 2012 nor 2015 is a full year**, so the table above cannot be read as a
+straight year-on-year comparison. On a like-for-like basis — 1 January to 19 March
+in each year, matching 2015's coverage:
+
+| Period | Conversion | Revenue/order | Revenue/session |
+|---|---:|---:|---:|
+| 2013 Q1 | 6.40% | $52.24 | $3.34 |
+| 2014 Q1 | 6.53% | $61.84 | $4.04 |
+| 2015 Q1 | 8.44% | $62.80 | $5.30 |
+
+Like-for-like, revenue per session rose **31%** between 2014 and 2015 — *larger*
+than the full-year table implies, because Q1 is seasonally weaker than the year as
+a whole. Average order value also rose on this basis ($61.84 → $62.80), where the
+full-year comparison misleadingly showed a decline from $63.80.
+
+2012 is excluded from the like-for-like table: the site launched on 19 March 2012,
+so its January–March window contains a single day of trading.
+
+*Query: [`analysis/04_revenue_metrics.sql`](./analysis/04_revenue_metrics.sql) ·
+Results: [`results/04_monthly_revenue_metrics.csv`](./results/04_monthly_revenue_metrics.csv)*
+
+---
 
 ## Files
 
