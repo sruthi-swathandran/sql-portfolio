@@ -97,6 +97,38 @@ Results: [`results/02_monthly_conversion.csv`](./results/02_monthly_conversion.c
 
 ---
 
+### 3. Which marketing channels drive the most traffic, and which drive the most revenue?
+
+**Paid ads bring 82% of traffic but the least value per session. Organic search
+is worth 13% more per visit — and costs nothing.**
+
+| Channel | Sessions | Conversion | Revenue | Revenue/session |
+|---|---:|---:|---:|---:|
+| Paid | 389,543 (82%) | 6.72% | $1,567,077 | $4.02 |
+| Organic search | 43,411 (9%) | 7.51% | $196,809 | **$4.53** |
+| Direct | 39,917 (8%) | 7.15% | $174,624 | $4.37 |
+
+Two things stop this being a simple "spend less on ads" conclusion.
+
+**The free channels are small and cannot be bought.** Organic and direct together
+are 17.6% of sessions. Organic traffic is earned through content and reputation
+over years, not purchased. Paid acquired the other 82% — without it this business
+is a fifth of its size. A channel can be more efficient per visit and still be
+the wrong one to concentrate on.
+
+**Last-touch attribution undercredits paid.** A visitor who sees an ad, leaves,
+and returns later by typing the URL is recorded as Direct. The ad created that
+session but receives no credit for it. Some share of the organic and direct
+traffic is likely downstream of paid awareness, and this data cannot separate the
+two.
+
+**Limitation:** the dataset contains no advertising cost, so return on ad spend
+cannot be calculated. Revenue per session measures traffic quality, not
+profitability.
+
+*Query: [`analysis/03_channel_performance.sql`](./analysis/03_channel_performance.sql) ·
+Results: [`results/03_channel_performance.csv`](./results/03_channel_performance.csv)*
+
 ## Files
 
 | File | Purpose |
