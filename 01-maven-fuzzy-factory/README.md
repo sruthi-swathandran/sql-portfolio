@@ -220,6 +220,87 @@ exactly (32,313), the simplification does not distort the totals.
 Results: [`results/05_conversion_funnel.csv`](./results/05_conversion_funnel.csv)*
 
 ---
+### 6. What was the measurable impact of each new product launch?
+
+**Launching a product did almost nothing on its own. The change that mattered was
+a cross-sell feature added in September 2013 — which then needed a cheap product
+to work against.**
+
+Items per order sat at exactly **1.000** from March 2012 to August 2013. With one
+product on sale that is mechanically guaranteed; but it stayed there for eight
+months *after* a second product launched.
+
+| Date | Items/order | Event |
+|---|---:|---|
+| Mar 2012 – Dec 2012 | 1.000 | Mr Fuzzy only |
+| **Jan 2013** | **1.000** | **Forever Love Bear launches — no change** |
+| Feb – Aug 2013 | 1.000 | Two products; still nobody buys two |
+| **Sep 2013** | **1.010** | **First movement. No product launched.** |
+| Oct – Dec 2013 | 1.042 → 1.089 | Attach rate builds |
+| **Feb 2014** | **1.131 → 1.320** | **Hudson River Mini bear, $29.99** |
+| Mar 2014 – Mar 2015 | ~1.350 | Stable at ~35% attach rate |
+
+Orders here contain one or two items, never more, so items per order is really an
+**add-on attach rate**: 1.000 means no order includes a second item, 2.000 would
+mean every order does. The stable ~1.350 is a 35% attach rate.
+
+**January 2013 — the launch that did nothing to basket size.** Average order value
+rose from $49.99 to $51.20, but purely through mix: some customers chose the more
+expensive bear instead. Nobody bought two.
+
+**September 2013 — the change that isn't in the data.** Items per order moves for
+the first time in eighteen months, and no product launched that month. The
+capability to add a second item must have appeared then. It is not in `products`,
+and it was not a discount — every product sells at an identical price whether it
+is the primary item or the add-on. It is visible only in its effect.
+
+**February 2014 — the feature meets the right product.**
+
+| Product | Price | As primary | As add-on | % add-on |
+|---|---:|---:|---:|---:|
+| Hudson River Mini bear | $29.99 | 581 | 4,437 | **88.4%** |
+| Birthday Sugar Panda | $45.99 | 3,068 | 1,917 | 38.5% |
+| Forever Love Bear | $59.99 | 4,803 | 993 | 17.1% |
+| The Original Mr. Fuzzy | $49.99 | 23,861 | 365 | 1.5% |
+
+The Hudson River bear sells 8× more often as an add-on than as a main purchase.
+It barely functions as a standalone product — it is what people tack on. Among the
+three later products, the cheaper the item the more likely it is to be an add-on.
+Mr Fuzzy is the exception because of its role rather than its price: it is the
+destination product, 60% of all primary items, the thing customers arrive
+intending to buy.
+
+**Why not a before/after comparison?** Conversion rate rose after every launch —
+but conversion was rising every month regardless, the Sugar Panda launched inside
+the Q4 peak, and the Panda and Hudson River launches are only 55 days apart, so
+their windows overlap. Items per order avoids all three problems: it cannot exceed
+1.000 while a single product exists, so trend and seasonality are incapable of
+producing the movement.
+
+The before/after table demonstrates the problem it warns about:
+
+| Launch | Window | Orders | Items/order | Avg order value |
+|---|---|---:|---:|---:|
+| Forever Love Bear | before | 1,495 | **1.000** | $49.99 |
+| Forever Love Bear | after | 1,327 | **1.000** | $52.18 |
+| Birthday Sugar Panda | before | 2,360 | 1.038 | $53.75 |
+| Birthday Sugar Panda | after | 3,011 | 1.215 | $60.48 |
+| Hudson River Mini bear | before | 2,894 | 1.096 | $56.15 |
+| Hudson River Mini bear | after | 3,407 | 1.342 | $64.22 |
+
+The Forever Love Bear shows *fewer* orders after launch — not because the product
+failed, but because its "before" window covers Christmas and its "after" window
+covers January. Its items-per-order figure, however, reads exactly 1.000 on both
+sides: the one column seasonality cannot distort, and the one that answers the
+question. The Sugar Panda's "before" window already reads 1.038, confirming
+cross-selling had begun before that launch too.
+
+*Query: [`analysis/06_product_launch_impact.sql`](./analysis/06_product_launch_impact.sql) ·
+Results: [`results/06_monthly_items_per_order.csv`](./results/06_monthly_items_per_order.csv),
+[`results/06_product_mix.csv`](./results/06_product_mix.csv),
+[`results/06_launch_windows.csv`](./results/06_launch_windows.csv)*
+
+---
 
 ## Files
 
