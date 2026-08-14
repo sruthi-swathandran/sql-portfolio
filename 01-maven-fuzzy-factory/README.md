@@ -130,6 +130,7 @@ profitability.
 Results: [`results/03_channel_performance.csv`](./results/03_channel_performance.csv)*
 
 ---
+
 ### 4. How have revenue per order and revenue per session evolved?
 
 **Revenue per session grew 2.56×, from $2.07 to $5.30. Most of that came from
@@ -174,6 +175,49 @@ so its January–March window contains a single day of trading.
 
 *Query: [`analysis/04_revenue_metrics.sql`](./analysis/04_revenue_metrics.sql) ·
 Results: [`results/04_monthly_revenue_metrics.csv`](./results/04_monthly_revenue_metrics.csv)*
+
+---
+
+### 5. Where do users drop out of the conversion funnel?
+
+**The checkout leaks hardest: 37.9% of visitors who reach the billing page never
+complete the order — roughly $1.18M of abandoned purchases.**
+
+| Step | Sessions | Step conversion | Lost here |
+|---|---:|---:|---:|
+| Landing page | 472,871 | — | — |
+| Products page | 261,231 | 55.2% | 211,640 |
+| Product detail | 210,214 | 80.5% | 51,017 |
+| Cart | 94,953 | 45.2% | 115,261 |
+| Shipping | 64,484 | 67.9% | 30,469 |
+| Billing | 52,058 | 80.7% | 12,426 |
+| Thank you | 32,313 | **62.1%** | **19,745** |
+
+Three steps have a claim to being "worst", depending on the measure. Product
+detail → cart has the poorest conversion (45.2%). Landing → products loses the
+most people in absolute terms (211,640). Billing → thank you loses the fewest of
+the three — but loses the most valuable ones.
+
+**Priority: the billing step.** Those 19,745 sessions had chosen a product,
+entered shipping details, and reached payment. At the average order value of
+$59.99 they represent ~$1.18M of abandoned revenue, against $1.94M actually
+earned.
+
+The volume argument does not overturn this. One percentage point of improvement
+at billing yields ~521 extra orders; one percentage point off landing-page
+drop-off yields ~586, since only ~12.4% of product-page viewers eventually order.
+The returns are comparable — but a point at checkout comes from contained fixes
+(shorter forms, earlier shipping costs, more payment options), while a point at
+the landing page requires better targeting and page design across the whole
+acquisition funnel. Same return, far less effort.
+
+**Method note:** each step counts distinct sessions that reached that page at any
+point, not strict sequential progression. A session that revisited an earlier page
+still counts once per step. Since the final step reproduces the order count
+exactly (32,313), the simplification does not distort the totals.
+
+*Query: [`analysis/05_conversion_funnel.sql`](./analysis/05_conversion_funnel.sql) ·
+Results: [`results/05_conversion_funnel.csv`](./results/05_conversion_funnel.csv)*
 
 ---
 
