@@ -78,6 +78,25 @@ Results: [`results/01_monthly_traffic.csv`](./results/01_monthly_traffic.csv)*
 
 ---
 
+### 2. What is the session-to-order conversion rate, and how has it moved?
+**Conversion improved 2.7×, from ~3.2% to ~8.7% — a bigger commercial win than
+the traffic growth.**
+
+Overall conversion across the full period was 6.83% (32,313 orders from 472,871
+sessions), but that average hides steady month-on-month improvement.
+
+Traffic growth costs money in ad spend; conversion improvement is free margin on
+traffic already paid for. The two compound: ~13× more traffic at ~2.7× better
+conversion took monthly orders from 60 to 2,068.
+
+Unlike the traffic figures, the partial final month does not distort this — a
+rate is a ratio, so 18 days of sessions over 18 days of orders remains valid.
+
+*Query: [`analysis/02_conversion_rate.sql`](./analysis/02_conversion_rate.sql) ·
+Results: [`results/02_monthly_conversion.csv`](./results/02_monthly_conversion.csv)*
+
+---
+
 ## Files
 
 | File | Purpose |
