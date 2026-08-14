@@ -302,6 +302,98 @@ Results: [`results/06_monthly_items_per_order.csv`](./results/06_monthly_items_p
 
 ---
 
+### 7. Do mobile and desktop visitors convert differently, and has the gap changed over time?
+
+**Mobile converts at a third of desktop's rate — 3.09% against 8.50% — worth
+roughly $477,000 in missing orders.**
+
+| Device | Sessions | Share | Conversion | Avg order value | Revenue/session |
+|---|---:|---:|---:|---:|---:|
+| Desktop | 327,027 | 69.2% | **8.50%** | $59.91 | **$5.09** |
+| Mobile | 145,844 | 30.8% | **3.09%** | $60.50 | **$1.87** |
+
+**The diagnosis is in the order values, not the conversion rates.** Mobile's
+average order is $60.50 against desktop's $59.91 — marginally *higher*. Mobile
+visitors spend the same when they buy. The entire gap is that they do not buy.
+
+That distinction rules out one explanation and points at another. If mobile users
+were choosing cheaper products, this would be a merchandising problem. They
+aren't. They abandon before purchasing at all, which points at checkout and
+usability on small screens.
+
+#### Has the gap changed? The two obvious measures disagree.
+
+| Year | Desktop | Mobile | Gap (points) | Gap (ratio) |
+|---|---:|---:|---:|---:|
+| 2012 | 5.05% | 1.47% | 3.59 | 3.45× |
+| 2013 | 8.02% | 3.12% | 4.90 | 2.57× |
+| 2014 | 9.18% | 3.31% | 5.87 | 2.77× |
+| 2015 | 10.59% | 3.50% | **7.10** | **3.03×** |
+
+In percentage points the gap nearly doubled. As a ratio it slightly narrowed.
+Both are correct: desktop improved 2.10× over the period, mobile 2.38×.
+**Mobile improved faster** — but from so far behind that proportional gains widen
+the absolute gap anyway. Two people earning ₹100 and ₹1,000 who each receive a
+10% rise have improved equally, and the distance between them has grown by ₹90.
+
+The implication is that mobile has not been neglected. Whatever improved
+conversion worked on both devices, slightly better on mobile. But at this rate
+mobile will never close the gap, because closing an absolute gap requires
+improving substantially faster, not marginally.
+
+#### Mobile's share of traffic is not on a simple upward path.
+
+Comparing the two complete years, mobile grew from 28.9% (2013) to 33.4% (2014).
+But on a like-for-like basis — 1 January to 19 March in each year, matching 2015's
+coverage — the picture changes:
+
+| Q1 window | Total sessions | Mobile share |
+|---|---:|---:|
+| 2013 | 17,251 | 25.6% |
+| 2014 | 41,291 | **39.8%** |
+| 2015 | 64,198 | 30.3% |
+
+Mobile share rose steeply into early 2014 and then fell **9.5 points** by early
+2015. With 41,291 and 64,198 sessions in those windows, the movement is not noise.
+
+Q1 also turns out to be a *high*-mobile quarter rather than a low one: Q1 2014's
+39.8% sits well above that year's 33.4% full-year figure. So the dip visible in
+the full-year series is not an artefact of the shortened window — it is real.
+
+What caused the reversal cannot be answered from this data. It does not change the
+conclusion: at ~30% of traffic and a third of desktop's conversion, mobile is a
+large and persistent problem whichever way its share is moving.
+
+#### The cost
+
+At desktop's conversion rate, 145,844 mobile sessions would have produced about
+**12,400 orders instead of 4,508** — roughly **7,900 missing orders**, or
+**$477,000** at mobile's average order value.
+
+That is a larger prize than the checkout abandonment in finding 5, and the two are
+plausibly the same problem: a checkout that works poorly on small screens.
+
+**Connection to finding 4.** Q1 revenue per session is consistently below the
+full-year figure, and mobile mix explains part of it. Applying 2014's device-level
+revenue per session ($5.86 desktop, $2.11 mobile) to Q1's 39.8% mobile mix rather
+than the year's 33.4% accounts for roughly $0.24 of Q1 2014's $0.57 shortfall
+against the full year. The remainder is lower conversion within each device.
+Q1 is weaker partly because more of its traffic arrives on the device that
+converts worst.
+
+**Limitation:** `device_type` records only `desktop` or `mobile`. Tablets, if any,
+are folded into one of those two, and the data does not say which. Operating
+system, screen size and browser are not recorded, so the analysis cannot go
+further than the binary split.
+
+*Query: [`analysis/07_device_performance.sql`](./analysis/07_device_performance.sql) ·
+Results: [`results/07_device_overall.csv`](./results/07_device_overall.csv),
+[`results/07_device_by_year.csv`](./results/07_device_by_year.csv),
+[`results/07_device_mix.csv`](./results/07_device_mix.csv),
+[`results/07_device_mix_like_for_like.csv`](./results/07_device_mix_like_for_like.csv)*
+
+---
+
 ## Files
 
 | File | Purpose |
