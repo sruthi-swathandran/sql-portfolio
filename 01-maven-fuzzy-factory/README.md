@@ -401,6 +401,119 @@ Results: [`results/07_device_overall.csv`](./results/07_device_overall.csv),
 [`results/07_device_mix_like_for_like.csv`](./results/07_device_mix_like_for_like.csv)*
 
 ---
+### 8. Is the brand campaign worth the spend, compared with nonbrand?
+
+**Brand converts better than nonbrand, but 61% of that advantage is who brand
+reaches rather than what the campaign does.**
+
+| Campaign | Sessions | Conversion | Revenue | Rev/session |
+|---|---:|---:|---:|---:|
+| nonbrand | 337,615 | 6.71% | $1,349,978 | $4.00 |
+| organic + direct (untagged) | 83,328 | 7.34% | $371,433 | $4.46 |
+| brand | 41,243 | 7.79% | $194,840 | $4.72 |
+| desktop_targeted | 5,590 | 5.15% | $18,516 | $3.31 |
+| pilot | 5,095 | 1.08% | $3,743 | $0.73 |
+
+Brand is small. 41,243 sessions is 10.6% of paid traffic and 10.1% of revenue.
+Nonbrand carries 87% of paid traffic and 70% of all revenue.
+
+Brand also converts less well than expected. Industry convention is that brand
+campaigns convert two to three times better than nonbrand, since those visitors
+already know the business and have decided to buy. Here brand converts 1.16 times
+better.
+
+#### Most of that 1.16 times is composition, not campaign performance
+
+Repeat-visitor share explains it:
+
+| Campaign | Sessions | Repeat | Repeat % |
+|---|---:|---:|---:|
+| brand | 41,243 | 26,224 | 63.6% |
+| organic + direct | 83,328 | 52,329 | 62.8% |
+| nonbrand | 337,615 | 0 | 0.0% |
+| desktop_targeted | 5,590 | 0 | 0.0% |
+| pilot | 5,095 | 0 | 0.0% |
+
+Nonbrand is entirely first-time visitors. Nobody who already knows the business
+arrives through a generic search ad, which makes sense: once you know the name you
+search the name or type the URL. Brand, by contrast, is two thirds returning
+visitors.
+
+Returning visitors convert better regardless of which ad they clicked, so brand's
+headline rate is measuring its audience rather than its effectiveness. Comparing
+first-time sessions only:
+
+| Comparison | Brand | Nonbrand | Gap |
+|---|---:|---:|---:|
+| All sessions | 7.79% | 6.71% | 1.08 pts |
+| First-time visitors only | 7.13% | 6.71% | 0.42 pts |
+
+Of the 1.08-point gap, 0.66 points comes from brand being 64% returning visitors.
+0.42 points survives a like-for-like comparison. Composition accounts for 61% of
+the apparent advantage.
+
+#### What survives is smaller than it looks
+
+Those 15,019 first-time brand sessions are people who typed the company name into
+a search engine having never visited the site. They heard about it somewhere:
+word of mouth, an ad on another device, something offline. They arrive with
+purchase intent that a nonbrand searcher does not have.
+
+So even the like-for-like comparison is tilted in brand's favour, and brand still
+manages only 7.13% against 6.71%. People actively searching the business by name
+convert barely better than people searching "teddy bear gift."
+
+Brand traffic also resembles the free traffic closely on both measures available:
+63.6% returning against 62.8%, and 7.79% conversion against 7.34%. That is the
+pattern you would expect if brand ads and organic search are intercepting the same
+person on the same journey, one of them for money.
+
+Two caveats keep this short of proof. Brand does beat the free traffic slightly in
+both strata (7.13% against 6.81% for first-timers, 8.16% against 7.66% for
+returners), so the two populations are similar rather than identical, and this
+data does not explain the residual. More importantly, there is no period where
+brand ads were switched off, so the counterfactual does not exist here. The
+evidence is consistent with a weak incremental effect. It does not establish one.
+
+#### The two short campaigns were tests
+
+| Campaign | Window | Days | Conversion |
+|---|---|---:|---:|
+| pilot | 12 Jan to 15 Mar 2014 | 62 | 1.08% |
+| desktop_targeted | 17 Aug to 27 Dec 2014 | 132 | 5.15% |
+
+Neither is ongoing spend. Both ran for a few months and stopped, which reads like
+experiments that were run and then killed, though the data records when they
+ended and not why.
+
+Pilot returned 55 orders from 5,095 sessions. It ran in Q1, which question 4
+established is a seasonally weak quarter, but seasonality moves conversion by
+fractions of a point and pilot came in six times below nonbrand. Desktop_targeted
+had the opposite advantage, running through the Q4 peak, and still finished below
+nonbrand's full-period average.
+
+#### A timeline detail
+
+Nonbrand's first session is 19 March 2012, the launch date. Brand, organic and
+direct all begin on 25 March, six days later. Nobody can search a company's name
+or return to a site that nobody has visited yet. Nonbrand had to run first to
+create the audience the other channels then harvested, which is the incrementality
+argument stated as a sequence rather than a statistic.
+
+**Limitations.** The dataset has no advertising cost, so return on spend cannot be
+calculated for any campaign. Exactly zero repeat sessions across 337,615 nonbrand
+visits is too clean for real traffic, where some users clear cookies or switch
+devices; this is a simulated dataset and that perfect zero is a property of how it
+was generated. The method transfers to real data. The number does not.
+
+*Query: [`analysis/08_brand_vs_nonbrand.sql`](./analysis/08_brand_vs_nonbrand.sql) ·
+Results: [`results/08_campaign_volume.csv`](./results/08_campaign_volume.csv),
+[`results/08_campaign_performance.csv`](./results/08_campaign_performance.csv),
+[`results/08_repeat_share.csv`](./results/08_repeat_share.csv),
+[`results/08_conversion_by_repeat_status.csv`](./results/08_conversion_by_repeat_status.csv),
+[`results/08_campaign_date_ranges.csv`](./results/08_campaign_date_ranges.csv)*
+
+---
 
 ## Files
 
