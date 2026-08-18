@@ -7,6 +7,15 @@ The business questions here are the ones an e-commerce analyst is actually asked
 where is traffic coming from, how much of it converts, which channels are worth
 the spend, and did the new product launches work.
 
+## Headline findings
+
+- 37.9% of visitors who reach the billing page never complete the order, roughly $1.18M of abandoned purchases. [Finding 5](#5-where-do-users-drop-out-of-the-conversion-funnel)
+- Mobile converts at a third of desktop's rate, worth about $477,000 in orders the site never received. [Finding 7](#7-do-mobile-and-desktop-visitors-convert-differently-and-has-the-gap-changed-over-time)
+- Mr Fuzzy's refund rate tripled for exactly two months in 2014 and no other product moved, which points at a defective batch costing around $9,900. [Finding 10](#10-which-product-has-the-highest-refund-rate-and-does-any-product-show-a-quality-problem-in-a-specific-period)
+- No product launch changed basket size. A cross-sell feature added in September 2013 did, once a cheap enough product existed to attach to. [Finding 6](#6-what-was-the-measurable-impact-of-each-new-product-launch)
+- 61% of the brand campaign's apparent advantage over nonbrand is who it reaches rather than what it does. [Finding 8](#8-is-the-brand-campaign-worth-the-spend-compared-with-nonbrand)
+- Only 1.86% of customers ever buy twice, and 90% of returning-visitor revenue is first purchases that took more than one visit to close. [Finding 9](#9-do-returning-visitors-convert-better-than-first-time-visitors-and-what-share-of-revenue-do-they-drive)
+
 ---
 
 ## Business questions
@@ -57,7 +66,73 @@ to this repository.
 
 ## Method
 
-<!-- Fill in as you build. Describe schema decisions, indexes added, and why. -->
+### Schema
+
+Six tables with seven foreign keys, built to mirror the source files rather than
+to denormalise for convenience. Identifiers are `INT UNSIGNED` rather than
+`BIGINT`, which halves the storage on 1.7 million rows and matters because foreign
+key columns must share the exact type of the key they reference. Money is
+`DECIMAL(10,2)`, never `FLOAT`, since binary floating point cannot represent values
+like 49.99 exactly and small errors accumulate across 40,025 line items.
+
+The four UTM columns and `http_referer` in `website_sessions` are deliberately
+nullable. 17.6% of sessions have no campaign tag, and that absence is the organic
+and direct traffic, so it carries meaning and should not be filled with a
+placeholder.
+
+### Loading and verification
+
+Tables load parent-first so foreign keys are satisfied at every step. Two traps in
+the source files are worth recording because neither raises an error.
+
+The CSVs store missing values as the four-character string `NULL` rather than as
+empty fields, so `LOAD DATA` would store the literal text. Each affected column is
+read into a user variable and passed through `NULLIF(@var, 'NULL')`.
+
+`website_pageviews.csv` uses LF line endings while the other five use CRLF.
+Loading it with `LINES TERMINATED BY '\r\n'` inserts zero rows and reports success.
+That was caught only by counting rows afterwards.
+
+`03_verify_load.sql` states the expected result above each check before running
+it: row counts per table, the count of literal `NULL` strings remaining, and the
+character length of every product name to confirm no trailing carriage returns
+survived. A load that completes without erroring can still be wrong, and these are
+the checks that catch it.
+
+### Indexes
+
+Eight indexes, created after loading rather than before, since maintaining them
+during a 1.19 million row insert slows the load for no benefit. Columns with two
+distinct values, `device_type` and `is_repeat_session`, are deliberately not
+indexed: the optimiser will scan rather than use an index that matches half the
+table. `idx_sessions_utm` is kept despite low cardinality because it supports
+`GROUP BY` sorting rather than lookups.
+
+### Analytical approach
+
+Four habits recur through the findings and are worth naming, because each one
+changed a conclusion at least once.
+
+Partial periods are compared like for like. 2012 begins on 19 March and 2015 ends
+on 19 March, so neither is a full year. Restricting every year to 1 January
+through 19 March reversed the apparent decline in average order value in finding 4
+and reversed the direction of mobile traffic share in finding 7.
+
+Composition is separated from performance. When a group looks better on some
+metric, the first question is whether it is composed differently rather than
+performing differently. This removed 61% of brand's apparent advantage in
+finding 8 and 90% of the apparent loyalty effect in finding 9.
+
+Mechanically bounded metrics are preferred for attribution. Items per order cannot
+exceed 1.000 while a single product is on sale, so trend and seasonality are
+incapable of producing movement in it. That is what makes the September 2013
+cross-sell finding defensible where a conversion-rate comparison would not have
+been.
+
+Events are dated by when they happened, not when they were recorded. Refunds are
+keyed on order date rather than refund date, because a nine-day average lag
+shifts a batch defect into the following month and points the investigation at the
+wrong inventory.
 
 ---
 
@@ -622,6 +697,144 @@ Results: [`results/09_repeat_vs_first_time.csv`](./results/09_repeat_vs_first_ti
 
 ---
 
+### 10. Which product has the highest refund rate, and does any product show a quality problem in a specific period?
+
+**Two different answers. Birthday Sugar Panda has the worst standing rate at
+6.04%, while Mr Fuzzy had a two-month batch failure in 2014 that cost about
+$9,900.**
+
+| Product | Items sold | Refunded | Refund rate | Refunded value |
+|---|---:|---:|---:|---:|
+| The Birthday Sugar Panda | 4,985 | 301 | 6.04% | $13,843 |
+| The Original Mr. Fuzzy | 24,226 | 1,237 | 5.11% | $61,838 |
+| The Forever Love Bear | 5,796 | 129 | 2.23% | $7,739 |
+| The Hudson River Mini bear | 5,018 | 64 | 1.28% | $1,919 |
+
+Refunds total $85,339, or 4.4% of revenue.
+
+Rate and cost point at different products. Panda has the worst rate, but Mr Fuzzy
+accounts for 72% of the money refunded, so a single point of improvement there is
+worth more than eliminating Panda's refunds entirely. A ranking by rate alone
+would send someone at the wrong product.
+
+Every refund in this dataset is a full-item refund. Dividing refunded value by
+refund count gives $45.99, $49.99, $59.99 and $29.99, matching the four list
+prices exactly. Refund count and refund value therefore carry identical
+information, and only one of them needs analysing.
+
+#### August and September 2014
+
+Grouping by order month exposes a discrete event in Mr Fuzzy:
+
+| Month | Items sold | Refunded | Rate |
+|---|---:|---:|---:|
+| Jun 2014 | 893 | 51 | 5.71% |
+| Jul 2014 | 961 | 42 | 4.37% |
+| Aug 2014 | 958 | 132 | 13.78% |
+| Sep 2014 | 1,056 | 140 | 13.26% |
+| Oct 2014 | 1,173 | 29 | 2.47% |
+| Nov 2014 | 1,451 | 50 | 3.45% |
+
+Excluding those two months, Mr Fuzzy's 2014 rate is 371 refunds on 10,106 items,
+or 3.67%. At that rate August and September should have produced about 74 refunds.
+They produced 272, so roughly 198 items were refunded that otherwise would not
+have been, costing about $9,900 at $49.99 each. Replacement handling and any
+reputational cost are not in this data.
+
+Three checks separate this from a blip.
+
+The spike is confined to one product. In the same two months Panda ran 6.80% and
+6.62%, both inside its normal range, Hudson ran 0.66% and 1.22%, and Forever Love
+ran 1.69% and 3.19%. A shipping partner, a returns policy change or a payment
+processor problem would have moved every product. Only Mr Fuzzy moved, which
+points at that product's stock.
+
+The volume is ordinary. August sold 958 units and September 1,056, sitting between
+July's 961 and October's 1,173. The rate is not distorted by an unusual
+denominator or by a strange new cohort of buyers.
+
+It starts and stops sharply. A drifting quality decline would ramp up over
+several months. Two bad months returning immediately to 2.47%, the lowest month of
+the year, looks like defective stock that entered inventory, sold through and was
+replaced.
+
+Worth noting that Mr Fuzzy ran 7% to 9% through 2012 and had settled near 3.5% by
+late 2013, so this spike sits against a baseline that had been improving steadily
+for two years.
+
+#### Why the analysis keys on order date
+
+Grouping refunds by when they were issued rather than when the item was ordered
+produces a materially different picture:
+
+| Month | Refunds by order date | Refunds by refund date |
+|---|---:|---:|
+| Aug 2014 | 132 | 65 |
+| Sep 2014 | 140 | 213 |
+| Oct 2014 | 29 | 26 |
+
+By order date the two months are equally bad. By refund date, September looks
+like a single catastrophic month and August looks only mildly elevated. An
+analyst working from refund dates would investigate September's inventory and
+conclude August was fine, when half the evidence for August was sitting in
+September's row.
+
+Average days from order to refund explains the mechanism and rules out an
+alternative. That figure sits between 7.1 and 10.1 in all 36 months, including 7.8
+in August and 9.8 in September. The returns process did not slow down under three
+times the normal load, so the September pile-up is the arithmetic of a nine-day
+lag crossing a month boundary rather than a support queue falling behind. Had the
+lag stretched during the spike there would be a second finding here about returns
+capacity, and there isn't.
+
+The same distortion appears at Christmas, where December 2014 shows 75 refunds by
+refund date against 59 by order date.
+
+#### Does purchase role explain the ranking?
+
+Hudson is 88% add-on and Mr Fuzzy is almost never one, so the product ranking
+could be measuring willingness to bother returning a cheap extra rather than
+product quality. Splitting each product by role tests that:
+
+| Product | Add-on | Primary | Gap |
+|---|---:|---:|---:|
+| Birthday Sugar Panda | 5.74% | 6.23% | 0.49 |
+| Forever Love Bear | 1.91% | 2.29% | 0.38 |
+| Hudson River Mini bear | 1.28% | 1.20% | -0.08 |
+| The Original Mr. Fuzzy | 2.19% | 5.15% | 2.96 |
+
+Where volumes support it the effect is small, around 0.4 points, and Hudson shows
+none at all despite being the product where it should be largest. The ranking in
+the first table therefore reflects the products rather than how they get bought.
+
+Mr Fuzzy's 2.96-point gap is the exception and does not survive scrutiny. It rests
+on 365 add-on items producing 8 refunds. Cross-selling only became possible in
+September 2013, so restricting both sides to that period was the obvious test; it
+moved the gap to 2.52 points, meaning the period difference accounted for very
+little of it. The remaining figure still contains the August batch, and removing
+those months from the primary side alone brings it to 1.39 points, though that
+comparison is unfair because the add-on items came from the same inventory.
+
+With roughly 40 add-on items in the affected window there is not enough data to
+settle it. The gap is somewhere between 1.4 and 2.5 points and may be a real role
+effect, the batch event inflating the comparison, or noise.
+
+Limitations: the dataset records no product cost beyond cost of goods and no
+reason codes, so a refund for a faulty bear looks identical to one for a change of
+mind. That makes the August spike a strong inference rather than a confirmed
+manufacturing fault. Refunds also stop at 19 March 2015, so items ordered in the
+final weeks have had less time to be returned and the last month's rate is
+understated.
+
+*Query: [`analysis/10_refund_analysis.sql`](./analysis/10_refund_analysis.sql) ·
+Results: [`results/10_refund_rate_by_product.csv`](./results/10_refund_rate_by_product.csv),
+[`results/10_monthly_refund_rate.csv`](./results/10_monthly_refund_rate.csv),
+[`results/10_refunds_by_refund_date.csv`](./results/10_refunds_by_refund_date.csv),
+[`results/10_refund_by_item_role.csv`](./results/10_refund_by_item_role.csv),
+[`results/10_refund_by_item_role_post_sep2013.csv`](./results/10_refund_by_item_role_post_sep2013.csv)*
+
+---
+
 ## Files
 
 | File | Purpose |
@@ -637,6 +850,66 @@ Results: [`results/09_repeat_vs_first_time.csv`](./results/09_repeat_vs_first_ti
 
 ## Notes and assumptions
 
-<!-- Record every judgement call here: how you defined a "converting session",
-     whether refunds are netted off revenue, how you handled repeat sessions.
-     Stating these is what separates analysis from a query dump. -->
+Every judgement call made in the analysis, so that any figure here can be
+reproduced or disputed.
+
+**Converting session.** A session counts as converting if at least one row in
+`orders` references it. Session-level queries use a `LEFT JOIN` so that
+non-converting sessions stay in the denominator, and `COUNT(o.order_id)` rather
+than `COUNT(*)` for the numerator, since `COUNT` on a column ignores the nulls the
+left join produces.
+
+**Revenue is gross.** Refunds are never netted off. Total revenue reads $1,938,510
+throughout, against $85,339 refunded across the period. Net revenue would be
+$1,853,171, and finding 10 is the only place refunds enter the arithmetic. Any
+figure quoted from another finding is a gross figure.
+
+**Channel definition.** Sessions with a `utm_source` are Paid. Sessions with no
+`utm_source` but a `http_referer` are Organic Search. Sessions with neither are
+Direct. This is last-touch attribution and it undercredits paid advertising, since
+a visitor who sees an ad and returns later by typing the URL is recorded as
+Direct. Finding 3 discusses the consequence.
+
+**Funnel steps.** Finding 5 counts distinct sessions that reached each page at any
+point in the session, not strict sequential progression. A session that revisited
+an earlier page counts once per step. The final step reproduces the order count
+exactly (32,313), which is the check that the simplification does not distort the
+totals.
+
+**Repeat sessions and users.** `is_repeat_session` is taken as given rather than
+recomputed from `user_id`. Users are identified by `user_id`, which in practice
+would be cookie-based, so anyone clearing cookies or switching devices appears as
+a new person and repeat-purchase rates are understated.
+
+**Product launch dates** come from `products.created_at`. Before and after windows
+in finding 6 are 90 days either side of the launch date.
+
+**Right-censoring.** The data stops on 19 March 2015. A customer who bought in
+March 2015 has had no opportunity to return or to request a refund, so both
+repeat-purchase rate and the final month's refund rate are understated.
+
+**Rounding.** Percentages are reported to two decimal places and currency to the
+nearest dollar in prose, with exact values preserved in the exported CSVs. Ratios
+stated as "times better" are computed from unrounded values.
+
+### The data is simulated
+
+Three structural signals confirm this dataset was generated rather than observed,
+and each one bounds what the analysis can claim.
+
+Nonbrand traffic contains exactly zero repeat sessions across 337,615 visits. Real
+traffic would show a handful from cookie clearing and device switching.
+
+The sessions-per-user distribution does not decay. There are 27 times more
+four-session users (13,399) than three-session users (485), which no consumer
+website produces. Finding 9 therefore treats only the split between visiting once
+and returning at least once as meaningful, and does not interpret the frequency
+tiers.
+
+Every refund is a full-item refund, matching the list price to the cent in all
+four products. Real refund data contains partial refunds, restocking deductions
+and shipping adjustments.
+
+All counts are internally consistent and every total ties out, so the analytical
+methods hold and transfer to real data. The specific behavioural numbers should
+not be read as representative of a real business.
