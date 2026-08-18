@@ -401,6 +401,7 @@ Results: [`results/07_device_overall.csv`](./results/07_device_overall.csv),
 [`results/07_device_mix_like_for_like.csv`](./results/07_device_mix_like_for_like.csv)*
 
 ---
+
 ### 8. Is the brand campaign worth the spend, compared with nonbrand?
 
 **Brand converts better than nonbrand, but 61% of that advantage is who brand
@@ -465,15 +466,16 @@ convert barely better than people searching "teddy bear gift."
 
 Brand traffic also resembles the free traffic closely on both measures available:
 63.6% returning against 62.8%, and 7.79% conversion against 7.34%. That is the
-pattern you would expect if brand ads and organic search are intercepting the same
-person on the same journey, one of them for money.
+pattern you would expect if brand ads and organic search were intercepting the
+same person at the same point in the same journey, with only one of the two
+costing anything.
 
 Two caveats keep this short of proof. Brand does beat the free traffic slightly in
 both strata (7.13% against 6.81% for first-timers, 8.16% against 7.66% for
 returners), so the two populations are similar rather than identical, and this
 data does not explain the residual. More importantly, there is no period where
 brand ads were switched off, so the counterfactual does not exist here. The
-evidence is consistent with a weak incremental effect. It does not establish one.
+evidence is consistent with a weak incremental effect but does not establish one.
 
 #### The two short campaigns were tests
 
@@ -497,14 +499,15 @@ nonbrand's full-period average.
 Nonbrand's first session is 19 March 2012, the launch date. Brand, organic and
 direct all begin on 25 March, six days later. Nobody can search a company's name
 or return to a site that nobody has visited yet. Nonbrand had to run first to
-create the audience the other channels then harvested, which is the incrementality
-argument stated as a sequence rather than a statistic.
+create the audience the other channels then harvested, which is the same
+incrementality point the numbers above make, visible in the timeline.
 
-**Limitations.** The dataset has no advertising cost, so return on spend cannot be
+Limitations: the dataset has no advertising cost, so return on spend cannot be
 calculated for any campaign. Exactly zero repeat sessions across 337,615 nonbrand
 visits is too clean for real traffic, where some users clear cookies or switch
-devices; this is a simulated dataset and that perfect zero is a property of how it
-was generated. The method transfers to real data. The number does not.
+devices, so that perfect zero is a property of how this simulated dataset was
+generated rather than a number to carry into the real world. The method still
+transfers.
 
 *Query: [`analysis/08_brand_vs_nonbrand.sql`](./analysis/08_brand_vs_nonbrand.sql) ·
 Results: [`results/08_campaign_volume.csv`](./results/08_campaign_volume.csv),
@@ -512,6 +515,110 @@ Results: [`results/08_campaign_volume.csv`](./results/08_campaign_volume.csv),
 [`results/08_repeat_share.csv`](./results/08_repeat_share.csv),
 [`results/08_conversion_by_repeat_status.csv`](./results/08_conversion_by_repeat_status.csv),
 [`results/08_campaign_date_ranges.csv`](./results/08_campaign_date_ranges.csv)*
+
+---
+
+### 9. Do returning visitors convert better than first-time visitors, and what share of revenue do they drive?
+
+**Returning visitors convert 18% better and drive 19% of revenue, but almost none
+of that is loyalty. Only 1.86% of customers ever buy twice.**
+
+| | Sessions | % of sessions | Conversion | Revenue | % of revenue | Rev/session |
+|---|---:|---:|---:|---:|---:|---:|
+| First-time | 394,318 | 83.4% | 6.64% | $1,566,275 | 80.8% | $3.97 |
+| Returning | 78,553 | 16.6% | 7.83% | $372,235 | 19.2% | $4.74 |
+
+The conversion gap is 1.18 times. Convention holds that returning visitors convert
+two to three times better, so this is a weak effect, and it is the third time in
+this analysis that a supposedly large effect has turned out small. Brand versus
+nonbrand behaved the same way in finding 8.
+
+Average order value is $60.54 for returning visitors against $59.86 for
+first-timers. Practically identical, the same pattern as mobile against desktop in
+finding 7. Whatever advantage returning visitors have shows up as buying more
+often, never as spending more per order.
+
+#### Counting people instead of visits changes the question
+
+Sessions treat a four-visit user as four observations. Counting users instead:
+
+| Sessions per user | Users | % of users |
+|---:|---:|---:|
+| 1 | 343,048 | 87.00% |
+| 2 | 37,386 | 9.48% |
+| 3 | 485 | 0.12% |
+| 4 | 13,399 | 3.40% |
+
+87% of visitors come once. What matters commercially, though, is whether they buy
+again.
+
+| Orders per customer | Customers | % of customers | Revenue | % of revenue |
+|---:|---:|---:|---:|---:|
+| 1 | 31,105 | 98.14% | $1,864,153 | 96.2% |
+| 2 | 565 | 1.78% | $69,687 | 3.6% |
+| 3 | 26 | 0.08% | $4,669 | 0.2% |
+
+Repeat purchases account for 3.8% of revenue. Of 394,318 visitors, 31,696 ever
+bought anything (8.0%) and 591 ever bought twice (0.15%).
+
+#### Reconciling the two views
+
+Returning visitors produce 19.2% of revenue, but repeat purchase is 3.8% of it.
+Both numbers are correct, and the gap between them is the finding.
+
+Second-and-later orders total (565 × 1) + (26 × 2) = 617 out of 32,313 orders.
+Returning sessions produced 6,149 orders. So of those 6,149:
+
+- roughly 617 were genuine second purchases
+- roughly 5,532 were people making their first purchase on a return visit
+
+Ninety percent of "returning visitor" revenue is first purchases that took more
+than one visit to close. Those are people finishing something they had already
+started, rather than customers coming back for a second bear.
+
+That explains the conversion gap without invoking loyalty at all. A return visit
+is a late stage of one considered purchase. Someone who browses on Tuesday and
+buys on Thursday appears in this data as a first-time visitor and then a returning
+visitor, and only the second visit gets credited with the sale. It is the
+attribution problem from finding 3, one level down.
+
+That also fits the product, since a teddy bear is usually a gift and most people
+do not need a second one.
+
+#### What follows from it
+
+Retention spend would be misdirected here. There is no meaningful repeat-purchase
+behaviour to protect, and 96% of revenue comes from customers who buy exactly
+once. The return visit matters as part of closing a first sale, which makes it a
+remarketing and consideration problem rather than a loyalty one.
+
+The corollary is that this business depends almost entirely on acquisition and on
+first-visit conversion, which is where findings 3, 5 and 7 all point.
+
+#### Data quality note
+
+The sessions-per-user distribution is not credible as behaviour. Visit frequency
+decays in every consumer dataset ever measured, yet this one has 27 times more
+four-session users (13,399) than three-session users (485). Nothing about buying a
+teddy bear produces that shape.
+
+Read alongside the exactly zero repeat sessions in nonbrand traffic from finding 8,
+it confirms the data is simulated rather than observed. The counts are internally
+consistent and every total ties out, so the analysis holds, but the frequency
+tiers are not interpreted as behaviour here. Only the split between visited once
+and returned at least once is treated as meaningful.
+
+Limitations: users are identified by `user_id`, which in practice would be
+cookie-based, so anyone clearing cookies or switching devices appears as a new
+person. Real repeat-purchase rates would therefore be somewhat higher than 1.86%.
+The dataset also covers three years, and a customer who bought in March 2015 has
+had no opportunity to return, which understates repeat purchase at the end of the
+window.
+
+*Query: [`analysis/09_repeat_visitors.sql`](./analysis/09_repeat_visitors.sql) ·
+Results: [`results/09_repeat_vs_first_time.csv`](./results/09_repeat_vs_first_time.csv),
+[`results/09_sessions_per_user.csv`](./results/09_sessions_per_user.csv),
+[`results/09_orders_per_customer.csv`](./results/09_orders_per_customer.csv)*
 
 ---
 
