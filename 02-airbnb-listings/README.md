@@ -310,6 +310,95 @@ columns are reported for that reason.
 *Query: [`analysis/03_room_type_by_city.sql`](./analysis/03_room_type_by_city.sql) ·
 Results: [`results/03_room_type_by_city.csv`](./results/03_room_type_by_city.csv)*
 
+### 4. What does each additional guest add to the price?
+
+**Nothing smooth. Price steps with the number of bedrooms, so an extra guest is
+either almost free or expensive depending on whether a room comes with them.**
+
+Whole homes only, since a private room sleeping four is a different product from
+an apartment sleeping four.
+
+| Guests | Listings | Median | Step | Per person | Modal bedrooms |
+|---:|---:|---:|---:|---:|---|
+| 1 | 2,939 | $57.85 | | $57.85 | 1 |
+| 2 | 61,349 | $74.59 | +28.9% | $37.29 | 1 |
+| 3 | 20,582 | $77.41 | **+3.8%** | $25.80 | 1 |
+| 4 | 50,946 | $96.76 | +25.0% | $24.19 | **2** |
+| 5 | 12,523 | $108.48 | **+12.1%** | $21.70 | 2 |
+| 6 | 18,209 | $143.39 | +32.2% | $23.90 | **3** |
+| 7 | 3,527 | $161.79 | **+12.8%** | $23.11 | 3 |
+| 8 | 5,967 | $232.23 | +43.5% | $29.03 | **4+** |
+
+Every large step lands where the modal bedroom count changes: three to four,
+five to six, seven to eight. Every small step stays inside a tier.
+
+Sleeping three costs 3.8% more than sleeping two because 78.9% of both are
+one-bedroom flats with a sofa. Sleeping four costs 25% more because half of them
+have become two-bedrooms. The unit being priced is the room, not the guest.
+
+The listing counts point the same way. Even capacities dominate, 61,349 sleeping
+two against 20,582 sleeping three, 50,946 sleeping four against 12,523 sleeping
+five. Beds come in pairs, so an odd capacity is usually an even configuration
+with something folded out.
+
+**Method note: an average nearly buried this.** `AVG(bedrooms)` rises in smooth
+increments of 0.34, 0.52, 0.41 and 0.45, which appears to rule bedrooms out as
+the cause. It does not, because every capacity level is a blend of tiers and a
+mean over a mixture slides even when the groups underneath it jump. Listings
+sleeping five are 16.9% one-bedroom, 60.0% two-bedroom and 21.3% three-bedroom,
+averaging 2.08 and looking like a midpoint.
+
+The distribution shows what the mean concealed: 96.4% of two-guest listings are
+one-bedroom, and by four guests 49.6% are two-bedroom. A mean is the wrong
+instrument for detecting a step.
+
+**Price per person is U-shaped, not falling.** It drops from $57.85 for a solo
+place to $21.70 at five guests, then climbs back to $29.03 at eight. Economies
+of scale run out around five. Above that, larger properties are a different
+product rather than a bigger one.
+
+#### Does it hold across cities?
+
+Eight of ten confirm the pattern, comparing the small step against the large one
+within each market separately.
+
+| City | 2 to 3 | 3 to 4 |
+|---|---:|---:|
+| Cape Town | 4.7% | **62.5%** |
+| Rio de Janeiro | 10.0% | 36.4% |
+| Sydney | 7.2% | 34.3% |
+| Bangkok | 5.6% | 28.1% |
+| Mexico City | 0.1% | 24.9% |
+| Paris | 14.3% | 23.8% |
+| Rome | 0.0% | 20.0% |
+| New York | 1.6% | 17.3% |
+| Istanbul | 18.8% | 17.9% |
+| Hong Kong | **43.3%** | 28.6% |
+
+In Rome, Mexico City and New York, a third guest costs essentially nothing:
+0.0%, 0.1% and 1.6%. Rome's two medians are identical at $72.32, the round
+number clustering from finding 2 showing up again.
+
+Istanbul is flat, 18.8 against 17.9, a gap too small to call.
+
+**Hong Kong reverses**, and it fits everything else known about that market. It
+is the densest in the dataset, the only one where private rooms outnumber whole
+homes, with the smallest whole-home stock at 3.6 average occupancy. Where space
+is scarcest there is no spare sofa, so a third guest needs real floor area. That
+is a reading consistent with the other Hong Kong results rather than a
+demonstrated mechanism.
+
+**Limitations.** `bedrooms` is null for 29,435 listings, about 10.5%, and those
+rows are excluded from the distribution query only. Capacity is capped at eight
+because counts thin out above that. Median price per guest describes what is
+advertised, not what anyone pays: a place sleeping four booked by a couple costs
+them the nightly rate.
+
+*Query: [`analysis/04_price_by_capacity.sql`](./analysis/04_price_by_capacity.sql) ·
+Results: [`results/04_price_by_capacity.csv`](./results/04_price_by_capacity.csv),
+[`results/04_bedroom_distribution.csv`](./results/04_bedroom_distribution.csv),
+[`results/04_capacity_step_by_city.csv`](./results/04_capacity_step_by_city.csv)*
+
 ---
 
 ## Notes and assumptions
