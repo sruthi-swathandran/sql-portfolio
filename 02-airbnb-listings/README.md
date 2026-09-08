@@ -546,6 +546,94 @@ level are penalised but above it nothing changes, would not show up here.
 Results: [`results/06_score_price_correlation.csv`](./results/06_score_price_correlation.csv),
 [`results/06_score_correlation_by_city.csv`](./results/06_score_correlation_by_city.csv)*
 
+### 7. How concentrated is supply among hosts?
+
+**Extreme at the very top, moderate overall, and wildly different between
+cities. Nearly half of Hong Kong's supply is commercial against a tenth of
+Paris's.**
+
+| Listings per host | Hosts | % of hosts | Listings | % of supply |
+|---|---:|---:|---:|---:|
+| 1 | 150,165 | 82.5% | 150,165 | **53.7%** |
+| 2 | 17,359 | 9.5% | 34,718 | 12.4% |
+| 3 to 5 | 10,133 | 5.6% | 36,541 | 13.1% |
+| 6 to 10 | 2,911 | 1.6% | 21,370 | 7.6% |
+| 11 to 50 | 1,349 | 0.7% | 24,903 | 8.9% |
+| 51 or more | **107** | 0.1% | **12,015** | 4.3% |
+
+Four fifths of hosts have exactly one listing and together hold just over half
+of all supply. At the other end, 107 hosts hold 12,015 listings between them,
+averaging 112 each.
+
+The cumulative curve is steep then flat:
+
+| Top share of hosts | Share of listings |
+|---:|---:|
+| 0.41% | 10% |
+| 3.77% | 25% |
+| 23.17% | 50% |
+| 61.58% | 75% |
+
+746 hosts hold as many listings as 27,971 individual hosts do. But reaching half
+of all supply takes 42,175 hosts, and three quarters takes 112,090. Under the
+familiar 80/20 rule the top fifth would hold 80%; here it holds roughly 47%.
+
+Both halves of that matter. A small professional segment exists and is large in
+absolute terms, while the bulk of the platform is still individuals with one
+property. Reporting either half alone would mislead.
+
+#### The average hides a fivefold gap between cities
+
+| City | Supply from hosts with 11+ | Supply from single-listing hosts |
+|---|---:|---:|
+| Hong Kong | **47.2%** | 18.7% |
+| Bangkok | 25.8% | 29.4% |
+| Istanbul | 15.7% | 42.0% |
+| Cape Town | 14.4% | 44.0% |
+| Mexico City | 12.9% | 42.2% |
+| Rio de Janeiro | 12.3% | 51.9% |
+| Rome | 11.6% | 36.1% |
+| New York | 10.4% | 61.8% |
+| Sydney | 9.4% | 64.1% |
+| Paris | 9.1% | **73.8%** |
+
+Nearly half of Hong Kong's listings come from operators running eleven or more,
+against fewer than one in five from individuals. Paris is the mirror image.
+
+**Limitations.** Host size is measured across all cities, so a host with six
+listings in Paris and six in Rome counts as large in both. The 150 hosts
+appearing in more than one city are counted once per city, so the per-city host
+counts sum slightly above 182,024. Eleven listings is a convention for
+"professional", not a definition the data supplies.
+
+*Query: [`analysis/07_supply_concentration.sql`](./analysis/07_supply_concentration.sql) ·
+Results: [`results/07_listings_per_host_bands.csv`](./results/07_listings_per_host_bands.csv),
+[`results/07_concentration_curve.csv`](./results/07_concentration_curve.csv),
+[`results/07_concentration_by_city.csv`](./results/07_concentration_by_city.csv)*
+
+### Two markets at opposite ends
+
+Seven questions in, Hong Kong and Paris have separated on every measure taken,
+and in the same direction each time.
+
+| | Hong Kong | Paris |
+|---|---|---|
+| Whole homes | 36.5%, the only city where private rooms lead | 85.7%, the highest |
+| Shared rooms | 6.1%, three times any other market | 0.7% |
+| Supply from operators with 11+ listings | 47.2% | 9.1% |
+| Supply from single-listing hosts | 18.7% | 73.8% |
+| Third guest costs | +43.3%, the only market where it exceeds the fourth | +14.3% |
+| Superhost price effect | none once room type is controlled | +17%, the only real premium |
+| Neighbourhood price spread per person | 1.74 | 1.82 |
+
+Hong Kong's Airbnb is small operators running subdivided space at scale, where
+an extra guest needs real floor area and the superhost badge means nothing to
+price. Paris is individuals letting whole apartments, where the badge is worth
+17% and location barely varies.
+
+None of those seven results was designed to show this. They accumulated, which
+is the argument for asking a set of questions rather than one.
+
 ---
 
 ## Notes and assumptions

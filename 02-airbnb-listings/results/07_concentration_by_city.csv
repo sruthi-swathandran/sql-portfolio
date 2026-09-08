@@ -1,0 +1,11 @@
+city,hosts,listings,pct_from_large_hosts,pct_from_single_hosts
+"Hong Kong",2048,7087,47.2,18.7
+Bangkok,8327,19361,25.8,29.4
+Istanbul,13566,24519,15.7,42.0
+"Cape Town",11118,19086,14.4,44.0
+"Mexico City",11527,20065,12.9,42.2
+"Rio de Janeiro",17324,26615,12.3,51.9
+Rome,14592,27647,11.6,36.1
+"New York",26765,37012,10.4,61.8
+Sydney,24965,33630,9.4,64.1
+Paris,51955,64690,9.1,73.8
