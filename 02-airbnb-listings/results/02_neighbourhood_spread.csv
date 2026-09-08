@@ -1,0 +1,11 @@
+city,neighbourhoods,spread_nightly,spread_per_person,size_effect
+"New York",59,6.15,3.58,1.72
+"Cape Town",30,3.70,3.21,1.15
+Sydney,34,6.28,2.87,2.19
+"Rio de Janeiro",29,3.30,2.86,1.16
+"Mexico City",14,2.65,2.29,1.16
+Bangkok,34,2.65,2.10,1.26
+Istanbul,28,3.41,1.87,1.82
+Paris,20,2.06,1.82,1.14
+"Hong Kong",9,3.12,1.74,1.79
+Rome,15,1.98,1.53,1.29

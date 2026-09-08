@@ -58,7 +58,13 @@ LIMIT 10;
    Loaded straight into typed columns they become 0000-00-00 or
    0 rather than NULL.
 
-   Expected: 128782, 113087, 29435, 242700, 91405
+   Note the grain. The first two counts are per host across
+   182,024 rows, not per listing across 279,712. A host counts
+   as having no response time only when none of their listings
+   carries one, so these are lower than the equivalent counts in
+   the source file (128,782 and 113,087 listings).
+
+   Expected: 108286, 95987, 29435, 242700, 91405
    ---------------------------------------------------------- */
 
 SELECT
@@ -69,8 +75,12 @@ SELECT
     (SELECT COUNT(*) FROM listings WHERE review_scores_rating  IS NULL) AS null_rating;
 
 /* --- Check 5: booleans converted from 't'/'f' --------------
-   Expected: superhosts 50253, listings with instant_bookable
-   about 71000, and no value other than 0, 1 or NULL.
+   Expected: 27280, 0, 115607, 0
+
+   Again note the grain: 27,280 is superhosts, not superhost
+   listings. Those 27,280 hosts account for 50,253 of the
+   279,712 listings, which is the figure check 2 reports from
+   staging.
    ---------------------------------------------------------- */
 
 SELECT

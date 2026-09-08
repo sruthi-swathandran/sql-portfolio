@@ -1,0 +1,39 @@
+city,neighbourhood,listings,median_usd,rank_nightly,median_per_person,rank_per_person,rank_shift
+Bangkok,"Parthum Wan",573,61.43,1,21.38,1,0
+Bangkok,Vadhana,2454,47.97,2,18.19,3,-1
+Bangkok,"Bang Rak",1079,45.62,3,16.54,4,-1
+Bangkok,Dusit,117,36.98,11,18.49,2,9
+"Cape Town","Ward 54",2552,147.26,1,42.66,1,0
+"Cape Town","Ward 62",612,132.82,2,36.71,2,0
+"Cape Town","Ward 74",981,123.32,3,31.91,3,0
+"Hong Kong",Islands,289,102.87,1,30.08,2,-1
+"Hong Kong","Central & Western",930,69.48,2,33.03,1,1
+"Hong Kong","Yuen Long",132,58.33,3,25.46,4,-1
+"Hong Kong",Eastern,265,42.54,7,25.78,3,4
+Istanbul,Sile,177,70.65,1,15.55,5,-4
+Istanbul,Adalar,195,67.20,2,18.73,2,0
+Istanbul,Beykoz,112,61.46,3,19.21,1,2
+Istanbul,Sariyer,324,49.50,6,18.52,3,3
+"Mexico City","Miguel Hidalgo",3287,44.73,1,16.55,2,-1
+"Mexico City","Cuajimalpa de Morelos",516,43.34,2,16.91,1,1
+"Mexico City",Cuauhtemoc,7623,38.09,3,13.24,3,0
+"New York",Tribeca,167,209.00,1,89.50,1,0
+"New York","Theater District",301,172.00,2,74.50,3,-1
+"New York",SoHo,280,170.00,3,77.00,2,1
+Paris,Elysee,1761,154.28,1,53.64,1,0
+Paris,Louvre,1405,138.61,2,50.92,3,-1
+Paris,Luxembourg,1996,131.38,3,51.23,2,1
+Paris,Hotel-de-Ville,1972,131.38,3,48.21,5,-2
+"Rio de Janeiro","Sao Conrado",226,88.82,1,25.59,1,0
+"Rio de Janeiro",Lagoa,262,82.72,2,22.67,2,0
+"Rio de Janeiro",Leblon,1165,80.66,3,20.67,3,0
+Rome,"I Centro Storico",14869,95.22,1,27.72,1,0
+Rome,"XV Cassia/Flaminia",501,72.32,2,25.31,2,0
+Rome,"IX Eur",347,72.32,2,24.71,3,-1
+Rome,"II Parioli/Nomentano",1991,72.32,2,24.11,4,-2
+Rome,"XII Monte Verde",1322,72.32,2,22.78,5,-3
+Rome,"XIII Aurelia",1697,72.32,2,21.70,6,-4
+Rome,"X Ostia/Acilia",631,72.32,2,20.09,13,-11
+Sydney,Pittwater,1165,308.87,1,64.51,1,0
+Sydney,Mosman,480,183.46,2,55.61,2,0
+Sydney,Manly,1631,154.82,3,48.38,3,0
