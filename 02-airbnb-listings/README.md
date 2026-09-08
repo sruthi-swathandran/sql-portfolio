@@ -399,6 +399,85 @@ Results: [`results/04_price_by_capacity.csv`](./results/04_price_by_capacity.csv
 [`results/04_bedroom_distribution.csv`](./results/04_bedroom_distribution.csv),
 [`results/04_capacity_step_by_city.csv`](./results/04_capacity_step_by_city.csv)*
 
+### 5. Do superhosts charge a premium?
+
+**No. In nine of ten cities the badge earns nothing or costs money.**
+
+Compared per person, then again within whole homes only, since a superhost
+renting a house against a regular host renting a studio would show a premium
+that is really about size.
+
+| City | Superhost share | Ratio, all listings | Ratio, whole homes |
+|---|---:|---:|---:|
+| Paris | 12.6% | 1.17 | **1.17** |
+| Mexico City | 31.9% | 1.01 | 1.04 |
+| Cape Town | 24.1% | 0.98 | 1.00 |
+| Hong Kong | 18.2% | 0.83 | **1.00** |
+| Istanbul | 13.2% | 0.96 | 0.97 |
+| Rome | 25.9% | 0.98 | 0.96 |
+| Sydney | 12.1% | 1.00 | 0.95 |
+| Bangkok | 20.1% | 0.83 | 0.89 |
+| New York | 18.8% | 0.93 | **0.84** |
+| Rio de Janeiro | 17.1% | 0.72 | **0.73** |
+
+A ratio above 1 means superhosts charge more per person for comparable property.
+
+Paris is the only market with a real premium at 17%. Four cities sit within a
+few points of parity. Five show a discount, with Rio at 27% and New York at 16%.
+
+**Two cities move when room type is controlled for.** Hong Kong's apparent 0.83
+becomes exactly 1.00, so its superhosts were not undercutting anyone, they were
+renting a different mix. New York's discount grows from 0.93 to 0.84, so its
+pooled figure was hiding a real one.
+
+The mix runs the opposite way to the obvious guess. Superhosts hold 70.9% whole
+homes against 63.8% for regular hosts, and whole homes cost the same or slightly
+more per person (finding 3), so composition should have made superhosts look
+*more* expensive. That it did not strengthens the discount rather than
+explaining it.
+
+**A plausible reason is that the causality runs backwards.** Superhost status
+requires a minimum number of completed stays as well as a high rating. Pricing
+below the market is a direct route to that booking volume. On that reading the
+badge does not let a host charge more; charging less helps a host earn the
+badge.
+
+This data cannot test that. There are no booking counts and no record of when a
+host gained the status, so it is the obvious candidate explanation rather than a
+finding.
+
+#### The rating comparison is close to circular
+
+| City | Superhost rating | Regular rating |
+|---|---:|---:|
+| Sydney | 97.4 | 92.4 |
+| Cape Town | 97.4 | 93.0 |
+| Mexico City | 97.3 | 93.1 |
+| Rio de Janeiro | 97.3 | 93.7 |
+| Paris | 96.9 | 92.3 |
+| New York | 96.9 | 92.8 |
+| Rome | 96.8 | 92.0 |
+| Bangkok | 96.6 | 91.5 |
+| Istanbul | 96.5 | 89.3 |
+| Hong Kong | 95.8 | 88.4 |
+
+Superhosts rate higher everywhere, by four to seven points. Airbnb awards the
+status partly for maintaining a high rating, so this measures the eligibility
+rule rather than host behaviour. It is worth reporting as confirmation that the
+flag means what it claims, and worth not reporting as a discovery.
+
+**Limitations.** Per-person pricing and the whole-home restriction control for
+size and room type, not for location within a city or for property quality. A
+superhost renting a comparable flat in a cheaper neighbourhood would still show
+as a discount here. Superhost status is a snapshot with no date attached, so
+nothing distinguishes a host who has held it for years from one who gained it
+last month.
+
+*Query: [`analysis/05_superhost_premium.sql`](./analysis/05_superhost_premium.sql) ·
+Results: [`results/05_superhost_by_city.csv`](./results/05_superhost_by_city.csv),
+[`results/05_superhost_room_mix.csv`](./results/05_superhost_room_mix.csv),
+[`results/05_superhost_entire_only.csv`](./results/05_superhost_entire_only.csv)*
+
 ---
 
 ## Notes and assumptions
