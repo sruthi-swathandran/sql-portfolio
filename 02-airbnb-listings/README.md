@@ -254,6 +254,62 @@ one. Neighbourhoods with fewer than 100 listings are excluded, leaving 272 of
 Results: [`results/02_neighbourhood_ranking.csv`](./results/02_neighbourhood_ranking.csv),
 [`results/02_neighbourhood_spread.csv`](./results/02_neighbourhood_spread.csv)*
 
+### 3. Which room types dominate each market, and what do they cost?
+
+**A whole home costs roughly twice a private room, and almost all of that is
+beds rather than privacy.**
+
+| City | Whole homes | Sleeps, whole / private | Premium nightly | Premium per person |
+|---|---:|---|---:|---:|
+| Sydney | 60.5% | 4.2 / 1.9 | 2.59× | **1.33×** |
+| Hong Kong | 36.5% | 3.6 / 2.3 | 2.30× | 1.29× |
+| New York | 52.4% | 3.6 / 1.9 | 2.33× | 1.21× |
+| Cape Town | 74.1% | 4.4 / 2.4 | 2.07× | 1.19× |
+| Mexico City | 52.6% | 3.9 / 2.0 | 2.37× | 1.12× |
+| Istanbul | 50.7% | 4.1 / 2.2 | 2.15× | 1.10× |
+| Rio de Janeiro | 72.5% | 4.8 / 2.4 | 2.19× | 1.04× |
+| Paris | 85.7% | 3.2 / 2.0 | 1.55× | **1.00×** |
+| Bangkok | 54.9% | 3.4 / 2.8 | 1.19× | **0.93×** |
+| Rome | 62.4% | 4.5 / 2.4 | 1.57× | **0.87×** |
+
+Nightly premiums of two to two and a half times shrink to between 0.87 and 1.33
+once occupancy is accounted for. Sydney's whole homes sleep 2.2 times as many
+people and cost 2.6 times as much, so the difference per head is 1.33.
+
+Paris lands on exactly 1.00: a whole apartment and a private room cost the same
+per person, and the entire nightly gap is beds.
+
+**Rome and Bangkok invert.** In Rome a whole home costs 13% less per person than
+a private room, so four friends taking an apartment each pay less than they
+would taking rooms. Rome's 4.6% hotel-room share and 32.3% private-room share
+point at guesthouse and bed-and-breakfast stock priced per room for two, against
+whole apartments sleeping 4.5. That is an explanation the data is consistent
+with rather than one it establishes.
+
+What survives the correction is the genuine price of exclusivity, and it runs
+from nothing in Paris to 33% in Sydney. The headline that a whole home costs
+twice a private room is true and tells you almost nothing.
+
+#### Market composition
+
+Hong Kong is the only city where private rooms outnumber whole homes, at 54.9%
+against 36.5%, and its 6.1% share of shared rooms is three times any other
+market's. Paris sits at the opposite end with 85.7% whole homes and 11.6%
+private rooms.
+
+`property_type` adds little beyond this. Its top ten values cover 88.4% of
+listings and 105 of its 144 categories hold fewer than 100 each. The two
+dominant values, `Entire apartment` at 138,989 and `Private room in apartment`
+at 47,322, are `room_type` with a building noun attached.
+
+**Limitation.** Occupancy is taken from `accommodates`, the maximum the host
+advertises, not from how many people actually stay. A whole home sleeping four
+booked by a couple costs them the nightly rate, not the per-person figure. Both
+columns are reported for that reason.
+
+*Query: [`analysis/03_room_type_by_city.sql`](./analysis/03_room_type_by_city.sql) ·
+Results: [`results/03_room_type_by_city.csv`](./results/03_room_type_by_city.csv)*
+
 ---
 
 ## Notes and assumptions
