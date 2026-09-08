@@ -1,0 +1,7 @@
+dimension,listings,avg_score,correlation
+location,187743,9.63,0.068
+cleanliness,187853,9.31,0.029
+accuracy,187805,9.57,0.023
+communication,187831,9.70,0.015
+checkin,187747,9.70,0.011
+value,187733,9.34,-0.007

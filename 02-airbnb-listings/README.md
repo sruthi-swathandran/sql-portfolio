@@ -478,6 +478,74 @@ Results: [`results/05_superhost_by_city.csv`](./results/05_superhost_by_city.csv
 [`results/05_superhost_room_mix.csv`](./results/05_superhost_room_mix.csv),
 [`results/05_superhost_entire_only.csv`](./results/05_superhost_entire_only.csv)*
 
+### 6. Which review score dimension is most associated with price?
+
+**None of them. The strongest relationship in the dataset explains half a
+percent of price variation.**
+
+MySQL has no `CORR()`, so Pearson is built from the raw sums. The six dimensions
+are unpivoted with `UNION ALL` so the formula is written once and grouped rather
+than repeated per column.
+
+| Dimension | Correlation with price per person | Variance explained |
+|---|---:|---:|
+| location | 0.068 | 0.5% |
+| cleanliness | 0.029 | 0.1% |
+| accuracy | 0.023 | 0.1% |
+| communication | 0.015 | 0.0% |
+| checkin | 0.011 | 0.0% |
+| value | -0.007 | 0.0% |
+
+**Computing it within each city does not rescue it.** The pooled figures mix ten
+markets whose price levels differ threefold while their scores barely move, so
+that between-city variation could plausibly have been drowning a real signal. It
+wasn't. The strongest within-city correlation anywhere is New York's location at
+0.108, and everything else falls between -0.045 and 0.097.
+
+The faint signal that exists is concentrated in the expensive mature markets:
+New York 0.108, Paris 0.097, Sydney 0.078, Cape Town 0.075, against Rio at 0.000
+and Mexico City at 0.007. Still negligible everywhere.
+
+The ordering of dimensions is noise. Location leads in five cities and
+cleanliness in four, which at correlations below 0.1 carries no information.
+
+#### Why the scores cannot predict much
+
+They barely vary. Check-in and communication are a perfect 10 for 81% of
+listings and 9 or 10 for 95%. A variable that is almost constant cannot explain
+one that ranges from a few dollars to several hundred.
+
+| Dimension | Share scoring 10 |
+|---|---:|
+| communication | 81.7% |
+| checkin | 81.4% |
+| location | 74.8% |
+| accuracy | 72.5% |
+| cleanliness | 58.0% |
+| value | 54.6% |
+
+Cleanliness and value are the only two with real spread, and neither is
+associated with price either.
+
+**One expectation this overturned.** Rating "value" is a judgement about price,
+so the obvious prediction is a strong negative correlation: expensive places
+should be rated poor value. It came out at -0.007. Guests appear to rate value
+against what they expected for the money rather than against the money itself,
+so a $400 listing delivering $400 of quality scores as well as a $30 one
+delivering $30 of quality.
+
+**Limitations.** 91,405 listings, roughly a third, have no review scores at all,
+so everything here is conditioned on having accumulated enough reviews to
+generate them. Listings that never get reviewed are systematically different, as
+finding 8 will show. Price per person is trimmed to $1 to $1,000, because
+Pearson is sensitive to outliers and this data reaches $625,216. Pearson also
+measures linear association only; a threshold effect, where scores below some
+level are penalised but above it nothing changes, would not show up here.
+
+*Query: [`analysis/06_score_price_correlation.sql`](./analysis/06_score_price_correlation.sql) ·
+Results: [`results/06_score_price_correlation.csv`](./results/06_score_price_correlation.csv),
+[`results/06_score_correlation_by_city.csv`](./results/06_score_correlation_by_city.csv)*
+
 ---
 
 ## Notes and assumptions
