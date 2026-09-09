@@ -611,9 +611,96 @@ Results: [`results/07_listings_per_host_bands.csv`](./results/07_listings_per_ho
 [`results/07_concentration_curve.csv`](./results/07_concentration_curve.csv),
 [`results/07_concentration_by_city.csv`](./results/07_concentration_by_city.csv)*
 
+### 8. What share of listings never receive a review?
+
+**30.8% of all listings, and more than half of Istanbul's. Roughly a fifth of
+that appears to be listings that never get booked at all, regardless of age.**
+
+| City | Listings | Never reviewed |
+|---|---:|---:|
+| Istanbul | 24,519 | **52.4%** |
+| Hong Kong | 7,087 | 45.4% |
+| Bangkok | 19,361 | 40.9% |
+| Rio de Janeiro | 26,615 | 37.4% |
+| Sydney | 33,630 | 29.8% |
+| Cape Town | 19,086 | 28.1% |
+| Mexico City | 20,065 | 26.8% |
+| New York | 37,012 | 25.7% |
+| Paris | 64,690 | 23.9% |
+| Rome | 27,647 | 23.3% |
+
+#### What separates the two groups
+
+Three differences hold across nearly every city.
+
+**Room type.** Unreviewed listings are less likely to be whole homes everywhere,
+often by twenty points: Istanbul 40.2% against 62.2%, Mexico City 35.5% against
+58.8%, Cape Town 57.6% against 80.6%.
+
+**Superhost status.** Unreviewed listings belong to superhosts four to seven
+times less often. That is partly mechanical, since the badge requires completed
+stays, though not entirely: status sits on the host, and a multi-listing host can
+qualify on one property while others sit unbooked.
+
+**Minimum stay.** Unreviewed listings demand longer minimums. Hong Kong 20.6
+nights against 7.7, Mexico City 7.9 against 3.3, Bangkok 13.6 against 8.6.
+
+New York and Hong Kong stand out on minimum nights in both groups, 28.6 and 21.5
+for New York, 20.6 and 7.7 for Hong Kong. Those look like regulation rather than
+preference, since New York restricts short unhosted rentals and Hong Kong
+licenses stays under a month. A listing forced to demand thirty nights gets few
+bookings and therefore few reviews. That explanation comes from outside the data
+and is offered as context rather than as a finding.
+
+Hong Kong inverts the superhost pattern, 19.0% of unreviewed against 17.5% of
+reviewed, the only city to do so. Consistent with its commercial supply in
+finding 7.
+
+#### How much of this is just listing age?
+
+A listing posted last month cannot have been reviewed. There is no creation date
+in this data, so `host_since` stands in as a proxy.
+
+| Host joined | Listings | Never reviewed |
+|---|---:|---:|
+| 2008 | 65 | 12.3% |
+| 2010 | 2,150 | 20.1% |
+| 2012 | 16,066 | 21.0% |
+| 2014 | 37,650 | 25.7% |
+| 2016 | 42,402 | 31.1% |
+| 2018 | 27,020 | 32.7% |
+| 2019 | 31,447 | 37.6% |
+| 2020 | 17,220 | **60.0%** |
+| 2021 | 1,208 | **82.5%** |
+
+Age explains a great deal, and two things separately explain the tail. The 2020
+and 2021 cohorts were both new and operating while global travel had stopped.
+The data ends 1 March 2021, so a 2020 host had at most fifteen months, most of
+them during a pandemic. Those two causes cannot be separated here.
+
+**But a floor persists that age does not explain.** Hosts who joined in 2010
+have had a decade, and a fifth of their listings still have no review. The 2011
+to 2015 cohorts run between 19% and 27%. That is a population of listings that
+appear never to get booked rather than a queue of recent arrivals.
+
+**The proxy understates the age effect.** `host_since` is when the host joined,
+not when the listing was posted, so a 2013 host may have added a listing in
+February 2021. Every cohort therefore contains genuinely new listings, which
+lifts the older cohorts' rates and flattens the relationship. The real
+association with age is steeper than 12% to 82%.
+
+So the reading is that a fifth to a quarter of listings are persistently
+unbooked, recency and the pandemic account for the excess above that, and the
+three characteristics above describe the persistent floor rather than the new
+arrivals.
+
+*Query: [`analysis/08_unreviewed_listings.sql`](./analysis/08_unreviewed_listings.sql) ·
+Results: [`results/08_unreviewed_by_city.csv`](./results/08_unreviewed_by_city.csv),
+[`results/08_unreviewed_by_cohort.csv`](./results/08_unreviewed_by_cohort.csv)*
+
 ### Two markets at opposite ends
 
-Seven questions in, Hong Kong and Paris have separated on every measure taken,
+Eight questions in, Hong Kong and Paris have separated on every measure taken,
 and in the same direction each time.
 
 | | Hong Kong | Paris |
@@ -624,14 +711,17 @@ and in the same direction each time.
 | Supply from single-listing hosts | 18.7% | 73.8% |
 | Third guest costs | +43.3%, the only market where it exceeds the fourth | +14.3% |
 | Superhost price effect | none once room type is controlled | +17%, the only real premium |
+| Minimum stay, unreviewed listings | 20.6 nights | 6.7 |
+| Superhosts among unreviewed listings | 19.0%, higher than among reviewed | 3.2%, five times lower |
 | Neighbourhood price spread per person | 1.74 | 1.82 |
 
 Hong Kong's Airbnb is small operators running subdivided space at scale, where
-an extra guest needs real floor area and the superhost badge means nothing to
-price. Paris is individuals letting whole apartments, where the badge is worth
-17% and location barely varies.
+an extra guest needs real floor area, minimum stays are long enough to suggest
+licensing rules, and the superhost badge means nothing to price. Paris is
+individuals letting whole apartments, where the badge is worth 17% and location
+barely varies.
 
-None of those seven results was designed to show this. They accumulated, which
+None of those eight results was designed to show this. They accumulated, which
 is the argument for asking a set of questions rather than one.
 
 ---
