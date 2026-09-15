@@ -698,6 +698,76 @@ arrivals.
 Results: [`results/08_unreviewed_by_city.csv`](./results/08_unreviewed_by_city.csv),
 [`results/08_unreviewed_by_cohort.csv`](./results/08_unreviewed_by_cohort.csv)*
 
+### 9. How old is each city's host base?
+
+**Nine of the ten markets peaked in host intake in 2015 or 2016. Istanbul peaked
+in 2019, and that turns out to explain most of finding 8.**
+
+The question on the list was market growth. This data cannot answer that,
+because it is a snapshot of hosts active in early 2021 and a host who joined in
+2012 and left in 2016 is absent entirely. What it can answer is how old each
+city's surviving host base is.
+
+| City | Hosts | Median join year | Joined by 2014 | Joined 2019 or later |
+|---|---:|---:|---:|---:|
+| New York | 26,749 | 2015 | 45.9% | 11.7% |
+| Paris | 51,923 | 2015 | 41.1% | 11.6% |
+| Rome | 14,582 | 2015 | 33.1% | 16.3% |
+| Sydney | 24,949 | 2015 | 32.3% | 9.2% |
+| Cape Town | 11,109 | 2016 | 19.6% | 16.4% |
+| Hong Kong | 2,046 | 2016 | 24.4% | 18.6% |
+| Rio de Janeiro | 17,304 | 2016 | 29.5% | 15.8% |
+| Bangkok | 8,326 | 2017 | 16.3% | 22.0% |
+| Mexico City | 11,521 | 2017 | 14.6% | 22.4% |
+| Istanbul | 13,555 | **2018** | 17.3% | **40.7%** |
+
+Peak intake year by city:
+
+| City | Peak | New hosts |
+|---|---|---:|
+| Paris | 2015 | 10,468 |
+| Sydney | 2015 | 5,156 |
+| New York | 2015 | 4,369 |
+| Rome | 2015 | 2,497 |
+| Bangkok | 2015 | 1,394 |
+| Hong Kong | 2015 | 326 |
+| Rio de Janeiro | 2016 | 4,448 |
+| Cape Town | 2016 | 2,353 |
+| Mexico City | 2016 | 2,167 |
+| **Istanbul** | **2019** | **3,222** |
+
+Istanbul's 2019 intake was 76% above its 2018 figure, at a point when every
+other market was shrinking. Its median host joined three years later than New
+York's or Paris's.
+
+#### This explains most of finding 8
+
+Finding 8 found Istanbul had the highest never-reviewed share at 52.4% and could
+not say why. Finding 8's own cohort table supplies the answer: 2019 joiners are
+37.6% unreviewed, 2020 joiners 60%, 2021 joiners 82.5%. A market where two
+fifths of hosts arrived in those years will show a high unreviewed share without
+anything being wrong with its listings.
+
+It does not explain all of it, and the two findings should be read together.
+
+#### Two things about the shape of every curve
+
+**Survivorship runs opposite to intuition.** Older cohorts have been thinned by
+hosts who left before 2021, so the true intake in 2012 was larger than these
+figures show. That makes the real peak earlier than 2015 and the decline since
+steeper, not gentler. Every early year here is a floor.
+
+**2021 holds two months, not twelve**, because the data ends on 1 March. The
+near-zero figures for that year are mostly that rather than a collapse.
+
+**Limitation.** `host_since` is when a host joined Airbnb, not when they first
+listed in a given city, so a 2013 host who entered a new market in 2020 counts
+as 2013 here. That understates how new each city's supply actually is.
+
+*Query: [`analysis/09_market_growth.sql`](./analysis/09_market_growth.sql) ·
+Results: [`results/09_host_base_age_by_city.csv`](./results/09_host_base_age_by_city.csv),
+[`results/09_host_intake_curve.csv`](./results/09_host_intake_curve.csv)*
+
 ### Two markets at opposite ends
 
 Eight questions in, Hong Kong and Paris have separated on every measure taken,
