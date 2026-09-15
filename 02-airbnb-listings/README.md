@@ -8,6 +8,16 @@ price comparison is valid until the prices are converted. Getting that wrong is
 the most common mistake made with this dataset, and getting it right is most of
 what this project is about.
 
+## Headline findings
+
+- Price steps with bedrooms, not guests. A third guest costs 3.8% more; a fourth costs 25%, because half of them come with another room. [Finding 4](#4-what-does-each-additional-guest-add-to-the-price)
+- Review scores carry almost no information about price. The strongest of six dimensions explains half a percent of variation, and splitting by city does not rescue it. [Finding 6](#6-which-review-score-dimension-is-most-associated-with-price)
+- The superhost badge commands a premium in one city out of ten. In five it comes with a discount, reaching 27% in Rio. [Finding 5](#5-do-superhosts-charge-a-premium)
+- 30.8% of listings have never been reviewed, and more than half of Istanbul's. Istanbul's host base is three years younger than New York's, which explains most of it. [Finding 8](#8-what-share-of-listings-never-receive-a-review) · [Finding 9](#9-how-old-is-each-citys-host-base)
+- Ranking cities by mean price puts Cape Town second and by median puts it fifth. Rio's mean matches Paris while its median is half. [Finding 1](#1-how-do-the-ten-city-markets-compare-on-price)
+- Half of Sydney's apparent neighbourhood price premium is property size. New York's is real. [Finding 2](#2-which-neighbourhoods-command-the-highest-prices-and-is-it-location)
+- Hong Kong looks like a cheap city and is the fourth most expensive for a family apartment. [Finding 10](#10-which-city-offers-the-best-value)
+
 ---
 
 ## Business questions
@@ -768,10 +778,67 @@ as 2013 here. That understates how new each city's supply actually is.
 Results: [`results/09_host_base_age_by_city.csv`](./results/09_host_base_age_by_city.csv),
 [`results/09_host_intake_curve.csv`](./results/09_host_intake_curve.csv)*
 
+### 10. Which city offers the best value?
+
+**Not answerable as asked, so answered as a like-for-like price comparison.
+Hong Kong is the city the headline figures misrepresent most.**
+
+Value needs a quality denominator and finding 6 removed the obvious one: review
+scores carry almost no information about price, so price per unit of quality
+cannot be computed. Ranking cities by price per person alone measures cheap, not
+value.
+
+What is answerable is what each market charges for the same thing. The basket is
+a whole home sleeping four with a review score of 90 or above. Fixing room type
+removes the composition effect from finding 3, fixing capacity removes the
+bedroom step from finding 4, and requiring a rating removes the never-booked
+listings from finding 8.
+
+| City | Basket | 25th | Median | 75th | Median, all listings | Ratio |
+|---|---:|---:|---:|---:|---:|---:|
+| Bangkok | 1,025 | $22.20 | $37.02 | $59.54 | $36.39 | 1.02 |
+| Rio de Janeiro | 3,549 | $32.26 | $45.89 | $71.70 | $50.19 | **0.91** |
+| Istanbul | 1,536 | $31.66 | $46.18 | $68.16 | $34.84 | 1.33 |
+| Mexico City | 2,437 | $34.43 | $47.67 | $68.09 | $31.97 | 1.49 |
+| Cape Town | 2,565 | $59.30 | $83.28 | $126.18 | $70.99 | 1.17 |
+| Rome | 4,144 | $66.29 | $84.37 | $114.50 | $78.34 | 1.08 |
+| Hong Kong | **222** | $73.22 | $109.96 | $154.69 | $49.76 | **2.21** |
+| Paris | 8,820 | $91.60 | $120.53 | $167.54 | $96.42 | 1.25 |
+| Sydney | 3,378 | $100.63 | $139.34 | $193.53 | $92.89 | 1.50 |
+| New York | 3,146 | $100.00 | $145.00 | $199.00 | $99.00 | 1.46 |
+
+For as close to an identical product as this data allows, New York costs 3.9
+times Bangkok.
+
+**Hong Kong moves from seventh to fourth.** Its headline median of $49.76 makes
+it look like one of the cheaper cities in the dataset. A whole home sleeping four
+with a decent rating costs $109.96 there, more than in Rome or Cape Town. The
+cheap median was measuring its private-room supply rather than affordable
+apartments.
+
+That is the sixth separate result pointing at Hong Kong's unusual composition,
+and it is the practically useful version for a traveller: Hong Kong is cheap if
+you will take a room and expensive if you need a flat.
+
+**Rio is the only city where the standardised basket costs less than the general
+median**, at 0.91. Everywhere else the ratio exceeds 1. That fits its 2.65
+mean-to-median skew from finding 1, the highest in the dataset. Rio's supply is
+stretched upward by expensive listings that a like-for-like comparison excludes.
+
+**Limitations.** Hong Kong's basket holds 222 listings against 1,025 to 8,820
+elsewhere, thin enough to note alongside the figure. The rating filter selects
+listings that have been booked, so the basket describes working supply rather
+than all supply. And this is value to a traveller paying in dollars. It says
+nothing about whether a city is expensive relative to local wages, which the
+currency table explicitly cannot address.
+
+*Query: [`analysis/10_city_value_comparison.sql`](./analysis/10_city_value_comparison.sql) ·
+Results: [`results/10_like_for_like_basket.csv`](./results/10_like_for_like_basket.csv)*
+
 ### Two markets at opposite ends
 
-Eight questions in, Hong Kong and Paris have separated on every measure taken,
-and in the same direction each time.
+Across ten questions, Hong Kong and Paris separated on every measure taken, and
+in the same direction each time.
 
 | | Hong Kong | Paris |
 |---|---|---|
@@ -783,20 +850,104 @@ and in the same direction each time.
 | Superhost price effect | none once room type is controlled | +17%, the only real premium |
 | Minimum stay, unreviewed listings | 20.6 nights | 6.7 |
 | Superhosts among unreviewed listings | 19.0%, higher than among reviewed | 3.2%, five times lower |
+| Standardised basket against headline median | 2.21, the widest gap | 1.25 |
 | Neighbourhood price spread per person | 1.74 | 1.82 |
 
-Hong Kong's Airbnb is small operators running subdivided space at scale, where
-an extra guest needs real floor area, minimum stays are long enough to suggest
-licensing rules, and the superhost badge means nothing to price. Paris is
+Hong Kong's Airbnb is small operators running subdivided space at scale, where an
+extra guest needs real floor area, minimum stays are long enough to suggest
+licensing rules, the superhost badge means nothing to price, and the headline
+median understates what a family apartment costs by more than half. Paris is
 individuals letting whole apartments, where the badge is worth 17% and location
 barely varies.
 
-None of those eight results was designed to show this. They accumulated, which
-is the argument for asking a set of questions rather than one.
+None of those ten results was designed to show this. They accumulated, which is
+the argument for asking a set of questions rather than one.
 
 ---
 
 ## Notes and assumptions
 
-<!-- Record how outlier prices were handled, which listings were excluded and
-     why, and the exchange rates used with the date they were taken. -->
+Every judgement call made across the ten questions, so any figure here can be
+reproduced or disputed.
+
+**Currency.** All prices are converted to US dollars at European Central Bank
+reference rates for 1 March 2021, matching the snapshot the data represents.
+Rates are stored as units per dollar, so conversion divides. The full table with
+its source is in
+[`schema/04_currency_reference.sql`](./schema/04_currency_reference.sql).
+
+Current rates would be a serious error rather than an approximation. The Turkish
+lira was near 7.2 to the dollar in early 2021 and has moved a long way since, so
+2021 prices converted at today's rate would make Istanbul look like the cheapest
+market in the dataset as an artefact of the choice of date.
+
+**Market rates are not purchasing power.** A city that converts to a low dollar
+price may not be inexpensive relative to local wages. Everything here is priced
+from the perspective of a traveller paying in dollars.
+
+**Excluded rows.** 113 listings priced at zero, treated as missing values entered
+as 0 rather than as free accommodation. Listings with `accommodates = 0` are
+excluded wherever a per-person figure is computed, since the division is
+undefined.
+
+**Median, not mean.** Price distributions are severely skewed and unevenly so:
+Rio's mean is 2.65 times its median while Paris's is 1.42. A mean would rank the
+cities differently and describe listings that do not exist. MySQL has no `MEDIAN`
+function, so percentiles are built from `ROW_NUMBER` and `COUNT` window
+functions throughout.
+
+**Price per person** is the comparison unit for anything involving property size,
+because a whole home sleeping six against a studio is a different product rather
+than a more expensive one. Occupancy comes from `accommodates`, the maximum the
+host advertises, not from how many people actually stay.
+
+**Volume thresholds.** Neighbourhoods need 100 listings to appear in finding 2,
+which keeps 272 of 660. Capacity is capped at eight guests in finding 4 above
+which counts thin out. Countries and other groupings state their own thresholds
+where used.
+
+**`maximum_nights`** reaches 2,147,483,647 on three rows, the largest signed
+32-bit integer and a sentinel for "no limit". It is stored as supplied and
+filtered in analysis rather than cleaned on load, so the raw value stays
+recoverable. 56% of listings sit at the platform default of 1,125.
+
+**Host attributes** are taken from the row with the lowest value where a host has
+conflicting values across listings, which affects about 30 hosts out of 182,024
+and appears to arise from the ten cities being captured on different dates.
+
+**`review_id` is not unique.** 160 values appear twice, always split across two
+listings that look like the same property listed twice, so `reviews` uses a
+composite primary key.
+
+### What the data cannot answer
+
+**There is no listing creation date.** `host_since` is when the host joined
+Airbnb, not when a listing was posted, so a 2013 host may have added a listing in
+2021. This understates how new supply is and flattens every relationship
+involving age.
+
+**The host base is a survivorship sample.** These are hosts active in early 2021.
+Anyone who joined in 2012 and left before 2021 is absent entirely, so early
+intake years are floors rather than counts, and the real peak was earlier than
+the data shows.
+
+**2021 holds two months**, not twelve. The data ends on 1 March.
+
+**2020 confounds newness with the pandemic.** Hosts joining that year were both
+recent and operating while global travel had stopped, and nothing here separates
+the two.
+
+**No booking counts.** Review counts stand in for demand, which undercounts:
+not every stay produces a review. Anything said about bookings is inference.
+
+**No cost or occupancy data**, so nothing here can be turned into a return
+figure for a host.
+
+### Source data defects
+
+Four properties of `Listings.csv` produced successful loads with wrong data, none
+raising an error. Each is documented in the load script beside the clause that
+fixes it: the file is UTF-8 with a handful of invalid bytes, its text is
+double-encoded so `pièces` is stored as `piÃ¨ces` in 38,328 listing names,
+MySQL's default backslash escaping shifted four rows left by one field, and
+missing values arrive as empty strings rather than as nulls.

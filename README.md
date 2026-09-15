@@ -14,7 +14,7 @@ prepared database dump.
 | # | Project | Domain | Scale | Status |
 |---|---------|--------|-------|--------|
 | 01 | [Maven Fuzzy Factory](./01-maven-fuzzy-factory) | E-commerce and marketing | 1.7M rows across 6 tables | **Complete** |
-| 02 | [Airbnb listings and reviews](./02-airbnb-listings) | Travel and pricing | 5.7M rows across 2 tables | Not started |
+| 02 | [Airbnb listings and reviews](./02-airbnb-listings) | Travel and pricing | 5.8M rows across 3 tables | **Complete** |
 | 03 | [NYC taxi trips](./03-nyc-taxi-trips) | Transport | 28M rows | Not started |
 
 ### Maven Fuzzy Factory
@@ -30,12 +30,28 @@ traffic and channel attribution through to refunds. Some of what it found:
 Full write-up, method and assumptions in the
 [project README](./01-maven-fuzzy-factory).
 
+### Airbnb listings and reviews
+
+Ten questions on 279,712 listings across ten cities in nine currencies, joined to
+5.37 million reviews. Normalised from two flat CSVs into three tables. Some of
+what it found:
+
+- Price steps with bedrooms, not guests. A third guest costs 3.8% more; a fourth costs 25%, because half of them come with another room
+- Review scores carry almost no information about price. The strongest of six dimensions explains half a percent of variation
+- The superhost badge commands a premium in one city out of ten, and comes with a discount in five
+- Hong Kong looks like a cheap city and is the fourth most expensive for a family apartment
+
+Ten separate questions converged on the same conclusion about two markets, none
+of which was designed to show it.
+
+Full write-up in the [project README](./02-airbnb-listings).
+
 ---
 
 ## Techniques used
 
-Listed as they appear in the repository, not as a wishlist. Projects 2 and 3 will
-add window functions and query tuning at scale.
+Listed as they appear in the repository, not as a wishlist. Project 3 will add
+query tuning at scale.
 
 **Schema design.** Data type selection sized to the data, primary and foreign
 keys, and an index strategy applied after loading with the reasoning recorded in
@@ -46,6 +62,21 @@ problem and when a left join is required to keep a denominator intact.
 
 **CTEs.** Single and chained common table expressions, used to pivot results and
 to aggregate an already-aggregated result.
+
+**Window functions.** `ROW_NUMBER` and `COUNT` partitioned to build medians and
+percentiles, since MySQL has no `MEDIAN`. `RANK` where ties should share a
+position rather than be ordered arbitrarily. `LAG` for the marginal cost of one
+more guest. Running totals with `SUM() OVER (ORDER BY ...)` for supply
+concentration, including the tie-breaking that stops the default `RANGE` framing
+collapsing a curve into steps.
+
+**Normalisation.** A flat CSV split into three tables through a staging table,
+with the host attributes that repeat across 279,712 rows moved to their own
+182,024-row table.
+
+**Statistics without a stats package.** Pearson correlation built from raw sums,
+with the six dimensions unpivoted so the formula is written once rather than
+repeated per column.
 
 **Aggregation.** Conditional aggregation with `CASE` and `SUM`, `GROUP BY` with
 `HAVING`, and scalar subqueries for share-of-total columns.
