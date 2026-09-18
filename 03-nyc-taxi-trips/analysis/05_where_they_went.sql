@@ -226,4 +226,69 @@ ORDER BY yr;
 
    "Yellow Zone pickup" in this project means boundary-adjacent.
    It does not mean Midtown, and it does not mean a violation.
+
+   -------------------------------------------------------------
+   PICKUPS AGAINST DROPOFFS: THE TRADE CHANGED PURPOSE
+
+   Green taxis may not collect a passenger in the Yellow Zone.
+   They may deliver one there, and overwhelmingly they did.
+
+     yr    % pickups yellow   % dropoffs yellow
+     2017        1.57               17.50
+     2018        1.72               17.85
+     2019        2.09               17.84
+     2020        2.99               18.49
+
+   An eleven-to-one asymmetry: this was a one-way service into
+   Manhattan.
+
+   The Manhattan-bound share barely moves while volume falls
+   48.5%. In absolute terms trips ending in the Yellow Zone fell
+   47.5% against 48.5% overall. Read on its own, that says
+   nothing changed about where green taxis go.
+
+   It is exactly wrong, and the breakdown shows why.
+
+   Share of trips bound for the Yellow Zone, by pickup band:
+
+     band            2017    2019
+     0 to 4 km       22.4%   24.0%
+     4 to 8 km        7.6%    8.8%
+     8 to 12 km       4.3%    7.1%
+     12 to 18 km      1.5%    5.4%
+     18 km plus       3.8%    9.1%
+
+   The rate falls with distance, which is intuitive: the closer
+   you start, the likelier you are going there. But it rose in
+   every band between 2017 and 2019, and rose most in the outer
+   ones. The 12 to 18 kilometre band more than tripled.
+
+   TWO OPPOSING EFFECTS, NEARLY CANCELLING
+
+   The trip mix moved outward, toward bands with low
+   Manhattan-bound rates, which pulls the aggregate down about
+   1.4 points. Within every band the rate rose, which pushes it
+   up about 1.7 points. Net movement, 0.3 points.
+
+   The most inert number in the analysis was under the most
+   pressure.
+
+   What it means: as green taxis lost local short-hop work, what
+   survived in the outer boroughs was disproportionately the
+   journey into Manhattan. The trade did not only shrink outward,
+   it changed purpose. Far-out green taxis in 2019 were three to
+   four times likelier to be carrying someone into the core than
+   the same zones' taxis in 2017.
+
+   DIRECTION OF TRAVEL FLIPPED IN 2018
+
+   Mean distance from the core, pickup against dropoff:
+
+     2017   3.79   3.94    dropoffs further out
+     2018   4.30   4.30    even
+     2019   4.59   4.52    pickups further out
+     2020   4.95   4.84
+
+   On balance green taxis carried people outward in 2017 and
+   inward by 2019.
    ============================================================= */

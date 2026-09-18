@@ -151,3 +151,88 @@ SELECT FLOOR(km_to_yellow_zone / 2) * 2 AS km_band_start,
 FROM zone_metrics
 GROUP BY km_band_start
 ORDER BY km_band_start;
+
+
+/* =============================================================
+   ZONE PAIR DISTANCES
+   =============================================================
+
+   Question 6 tests every reported trip distance against the
+   straight line between its two zones. Doing that inside a query
+   over 28 million trips means 28 million geodesic calculations.
+
+   There are only 260 zones, so there are only 67,600 possible
+   pairs. Computing those once and joining is the same move as
+   the bucketed median in question 2 and the zone metrics above.
+
+   Ordered pairs rather than unordered, both directions stored.
+   The distance is symmetric so half the rows are redundant, but
+   67,600 rows costs nothing and a join on (pu_location_id,
+   do_location_id) needs no CASE expression to normalise the
+   order. Clarity at the call site is worth 33,800 duplicate
+   rows.
+
+   Same-zone pairs are included and have a distance of zero,
+   which is correct and is exactly why question 6 has to exclude
+   them: a trip within one zone has no measurable straight line.
+   ============================================================= */
+
+DROP TABLE IF EXISTS zone_pair_distance;
+
+CREATE TABLE zone_pair_distance (
+    from_id  SMALLINT UNSIGNED NOT NULL,
+    to_id    SMALLINT UNSIGNED NOT NULL,
+    km       DECIMAL(7,3)      NOT NULL,
+
+    PRIMARY KEY (from_id, to_id)
+) ENGINE = InnoDB;
+
+INSERT INTO zone_pair_distance (from_id, to_id, km)
+SELECT a.location_id,
+       b.location_id,
+       ROUND(ST_Distance(a.centroid, b.centroid) / 1000, 3)
+FROM zone_geometry a
+CROSS JOIN zone_geometry b;
+
+/* --- Checks -------------------------------------------------
+   Expected: 67,600 rows, being 260 squared.
+   260 of them at exactly zero, the same-zone pairs.
+   The maximum should be around 50 km, roughly Staten Island to
+   the far edge of Queens.
+   ------------------------------------------------------------- */
+
+SELECT COUNT(*)          AS pairs,
+       SUM(km = 0)       AS same_zone_pairs,
+       ROUND(MAX(km), 1) AS furthest_km,
+       ROUND(AVG(km), 1) AS mean_km
+FROM zone_pair_distance;
+
+/* --- Check: symmetry ---------------------------------------
+   ST_Distance(a,b) must equal ST_Distance(b,a). If any pair
+   disagrees, something is wrong with the geometry rather than
+   with the arithmetic.
+
+   Expected: 0 rows
+   ------------------------------------------------------------- */
+
+SELECT COUNT(*) AS asymmetric_pairs
+FROM zone_pair_distance p
+JOIN zone_pair_distance q ON q.from_id = p.to_id
+                         AND q.to_id   = p.from_id
+WHERE p.km <> q.km;
+
+/* --- Check: a known pair -----------------------------------
+   JFK (132) to Times Square (230).
+
+   Expected: 20 to 21 km.
+
+   The spatial support test in 03_load_reference.sql measured JFK
+   to the Empire State Building at 21.2 km against an independent
+   calculation. Times Square sits a short distance from there, so
+   a similar figure here means the pair table agrees with a
+   number already verified by other means.
+   ------------------------------------------------------------- */
+
+SELECT km AS jfk_to_times_sq_km
+FROM zone_pair_distance
+WHERE from_id = 132 AND to_id = 230;
