@@ -1,0 +1,153 @@
+/* =============================================================
+   NYC Green Taxi Trips - Zone Metrics
+   MySQL 8.0.40
+
+   Run after 06_indexes.sql.
+
+   WHAT THIS IS FOR
+   ----------------
+   Questions 5, 7, 8 and 10 all need geometry-derived properties
+   of a zone: how far it sits from the Manhattan core, whether it
+   is an airport, which zones it touches.
+
+   Computing those inside a query against 28 million trips means
+   28 million spatial calculations. Computing them once against
+   260 zones means 260. The trip table then joins to a small
+   indexed lookup.
+
+   This is the same move that took the median from 1,146 seconds
+   to 106 in question 2: reduce the data to the distinct values
+   the question needs, compute on those, then join back.
+
+   WHY DISTANCE TO THE YELLOW ZONE
+   -------------------------------
+   The TLC divides the city into a Yellow Zone of 55 Manhattan
+   zones, 205 Boro Zones, 2 airports and Newark.
+
+   Green taxis exist because of that division. They were licensed
+   in 2013 to street-hail only in the Boro Zones and in the 14
+   Manhattan zones above 96th Street. Picking up in the Yellow
+   Zone was never permitted.
+
+   So the core is not a landmark somebody chose. It is the
+   regulatory boundary the whole trade is defined against, and
+   distance from it is the natural axis for asking where the
+   business went.
+
+   Measuring from a point instead would be worse. Manhattan is
+   thirteen miles long and two wide, so distance from Times
+   Square would call a zone at the northern tip of the Bronx
+   remote when it sits a mile from Inwood.
+
+   WHY CENTROIDS AND NOT BOUNDARIES
+   --------------------------------
+   The honest measure is the shortest distance between two
+   polygons. MySQL 8.0.40 supports ST_Distance on geographic
+   SRIDs for point pairs; support for polygon pairs is less
+   certain and would need testing before relying on it.
+
+   Centroid to centroid is a well-defined approximation that
+   overstates by roughly half the width of each zone. Zones here
+   are small, so the error is small, and it is constant across
+   years, which is what matters for a question about change.
+   ============================================================= */
+
+USE nyc_taxi;
+
+DROP TABLE IF EXISTS zone_metrics;
+
+CREATE TABLE zone_metrics (
+    location_id       SMALLINT UNSIGNED NOT NULL,
+    borough           VARCHAR(20)       NOT NULL,
+    service_zone      VARCHAR(12)       NOT NULL,
+    is_airport        TINYINT           NOT NULL,
+    km_to_yellow_zone DECIMAL(6,2)      NULL,
+
+    PRIMARY KEY (location_id),
+    KEY ix_band (km_to_yellow_zone)
+) ENGINE = InnoDB;
+
+/* Populated for the 260 zones that have geometry. The five
+   without one (57, 104, 105, 264, 265) are absent, so every
+   join from trips to this table is a LEFT JOIN and the
+   unmatched trips are counted rather than dropped. */
+
+INSERT INTO zone_metrics (location_id, borough, service_zone, is_airport, km_to_yellow_zone)
+SELECT z.location_id,
+       z.borough,
+       z.service_zone,
+       (z.service_zone IN ('Airports', 'EWR')) AS is_airport,
+       ROUND(MIN(ST_Distance(g.centroid, y.centroid)) / 1000, 2) AS km_to_yellow_zone
+FROM taxi_zones   z
+JOIN zone_geometry g ON g.location_id = z.location_id
+CROSS JOIN (
+    SELECT zg.centroid
+    FROM zone_geometry zg
+    JOIN taxi_zones    tz ON tz.location_id = zg.location_id
+    WHERE tz.borough      = 'Manhattan'
+      AND tz.service_zone = 'Yellow Zone'
+) AS y
+GROUP BY z.location_id, z.borough, z.service_zone;
+
+/* 260 zones against 55 Yellow Zone centroids is 14,300 distance
+   calculations, which is why this is done here once rather than
+   inside a query over 28 million trips. */
+
+
+/* --- Check: did it populate, and is the scale credible? -----
+   Expected: 260 rows.
+
+   Yellow Zone zones should show 0.00, since each one's nearest
+   Yellow Zone centroid is its own.
+
+   Staten Island should be the most remote borough. Newark
+   Airport should be further from the Manhattan core than either
+   JFK or LaGuardia.
+   ------------------------------------------------------------- */
+
+SELECT COUNT(*)                       AS zones,
+       MIN(km_to_yellow_zone)         AS nearest,
+       MAX(km_to_yellow_zone)         AS furthest,
+       SUM(km_to_yellow_zone IS NULL) AS unmeasured
+FROM zone_metrics;
+
+SELECT borough,
+       service_zone,
+       COUNT(*)                            AS zones,
+       ROUND(MIN(km_to_yellow_zone), 1)    AS nearest,
+       ROUND(AVG(km_to_yellow_zone), 1)    AS mean,
+       ROUND(MAX(km_to_yellow_zone), 1)    AS furthest
+FROM zone_metrics
+GROUP BY borough, service_zone
+ORDER BY mean;
+
+/* --- Check: named zones, so the numbers can be sanity-tested
+   against somewhere real -------------------------------------- */
+
+SELECT m.location_id, z.zone_name, m.borough, m.service_zone,
+       m.km_to_yellow_zone
+FROM zone_metrics m
+JOIN taxi_zones   z ON z.location_id = m.location_id
+WHERE m.location_id IN (
+    132,  -- JFK Airport
+    138,  -- LaGuardia Airport
+      1,  -- Newark Airport
+    230,  -- Times Sq / Theatre District, inside the Yellow Zone
+     43,  -- Central Park
+    244,  -- Washington Heights, upper Manhattan
+      3,  -- Allerton / Pelham Gardens, Bronx
+      6   -- Arrochar / Fort Wadsworth, Staten Island
+)
+ORDER BY m.km_to_yellow_zone;
+
+/* --- The distribution, which decides the bands ---------------
+   Bands are chosen after seeing where zones actually fall, not
+   before. Round numbers that split the data badly are worse than
+   awkward ones that split it well.
+   ------------------------------------------------------------- */
+
+SELECT FLOOR(km_to_yellow_zone / 2) * 2 AS km_band_start,
+       COUNT(*)                         AS zones
+FROM zone_metrics
+GROUP BY km_band_start
+ORDER BY km_band_start;
