@@ -236,3 +236,106 @@ WHERE p.km <> q.km;
 SELECT km AS jfk_to_times_sq_km
 FROM zone_pair_distance
 WHERE from_id = 132 AND to_id = 230;
+
+
+/* =============================================================
+   ZONE ADJACENCY
+   =============================================================
+
+   Which zones physically border one another. Question 7 uses it
+   to separate short local hops from journeys that cross the city.
+
+   WHY MBRIntersects COMES FIRST
+   -----------------------------
+   Two polygons can only share a boundary if their bounding boxes
+   overlap. MBRIntersects tests boxes rather than outlines, costs
+   almost nothing, and can use the spatial index.
+
+   Measured: 67,600 possible pairs reduce to 840 candidates, so
+   the expensive predicate runs 840 times. Some of these zones
+   carry thousands of vertices, so that ratio is the difference
+   between seconds and something much worse.
+
+   WHY ST_Intersects AND NOT ST_Touches
+   ------------------------------------
+   ST_Touches is the textbook answer. It requires boundaries to
+   meet while interiors stay disjoint, which is exactly what
+   adjacency means.
+
+   On this shapefile it returns 272 pairs. ST_Intersects returns
+   646.
+
+   A planar subdivision of 260 regions should have roughly 650 to
+   780 adjacent pairs. 646 is in range. 272 is less than half of
+   it.
+
+   The gap is digitising error. Where two boundaries overlap by a
+   few centimetres, the interiors technically intersect and
+   ST_Touches returns false, even though the zones plainly abut.
+   374 pairs fail on that technicality.
+
+   Since the zones are meant to partition the city, no genuine
+   overlap should exist, so any intersection is either a shared
+   boundary or an artefact of one. ST_Intersects captures both
+   and ST_Touches captures neither reliably.
+
+   The strict function gives the wrong answer on real data. Worth
+   knowing before trusting a spatial predicate that looks correct
+   in the documentation.
+
+   BOTH DIRECTIONS STORED
+   ----------------------
+   Same reasoning as zone_pair_distance: 1,292 rows costs nothing
+   and removes the need to normalise pair order at every join.
+   ============================================================= */
+
+DROP TABLE IF EXISTS zone_adjacency;
+
+CREATE TABLE zone_adjacency (
+    from_id SMALLINT UNSIGNED NOT NULL,
+    to_id   SMALLINT UNSIGNED NOT NULL,
+
+    PRIMARY KEY (from_id, to_id)
+) ENGINE = InnoDB;
+
+INSERT INTO zone_adjacency (from_id, to_id)
+SELECT a.location_id, b.location_id
+FROM zone_geometry a
+JOIN zone_geometry b
+  ON a.location_id <> b.location_id
+ AND MBRIntersects(a.geom, b.geom)
+WHERE ST_Intersects(a.geom, b.geom);
+
+/* --- Checks -------------------------------------------------
+   Expected: 1,292 rows, being 646 pairs stored twice.
+
+   Every zone should have at least one neighbour except islands.
+   Zones with none are worth looking at by name: a genuine island
+   is correct, anything else is a geometry problem.
+   ------------------------------------------------------------- */
+
+SELECT COUNT(*)                   AS directed_edges,
+       COUNT(DISTINCT from_id)    AS zones_with_a_neighbour
+FROM zone_adjacency;
+
+SELECT z.location_id, z.zone_name, z.borough
+FROM taxi_zones   z
+JOIN zone_geometry g ON g.location_id = z.location_id
+LEFT JOIN zone_adjacency a ON a.from_id = z.location_id
+WHERE a.from_id IS NULL
+ORDER BY z.location_id;
+
+/* --- Neighbour counts --------------------------------------
+   A zone in a dense grid should border four to eight others.
+   Anything bordering twenty is probably a large park, a body of
+   water, or a digitising problem.
+   ------------------------------------------------------------- */
+
+SELECT neighbours, COUNT(*) AS zones
+FROM (
+    SELECT from_id, COUNT(*) AS neighbours
+    FROM zone_adjacency
+    GROUP BY from_id
+) n
+GROUP BY neighbours
+ORDER BY neighbours;
